@@ -1,0 +1,54 @@
+/* Light-mode talk theme: subtle indigo accents to match the hero gradient (#5D5DFF). */
+
+:root {
+  --slidev-theme-primary: #5D5DFF;
+}
+
+html,
+body,
+#app {
+  background: #ffffff;
+  color: #1f2937; /* slate-800 */
+}
+
+.slidev-layout {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.slidev-layout h1,
+.slidev-layout h2,
+.slidev-layout h3 {
+  color: #111827; /* slate-900 */
+}
+
+.slidev-layout h1 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.slidev-layout a {
+  color: #5D5DFF;
+}
+
+.slidev-layout code {
+  color: #4338ca;
+  background: #eef2ff;
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+}
+
+.slidev-layout table {
+  font-size: 0.85em;
+}
+
+.slidev-layout th {
+  background: #eef2ff;
+  color: #312e81;
+}
+
+.slidev-layout blockquote {
+  border-left: 3px solid #5D5DFF;
+  background: #f5f5ff;
+  color: #1f2937;
+}
