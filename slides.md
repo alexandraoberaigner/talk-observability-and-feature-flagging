@@ -1,30 +1,42 @@
 ---
-theme: default
-colorSchema: light
-background: '#ffffff'
+theme: '@openfeature/slidev-theme-open-feature'
 title: Observability and Feature Flagging
 info: |
   ## Observability and Feature Flagging
   Why observability companies invest in feature flagging — and how you can benefit.
-class: text-left
 highlighter: shiki
 lineNumbers: false
 drawings:
   persist: false
 transition: slide-left
 mdc: true
-fonts:
-  sans: 'Inter'
-  mono: 'JetBrains Mono'
+layout: cover
 ---
 
-# Observability and<br/>Feature Flagging
+# Observability and <span class="text-accent">Feature Flagging</span>
 
-Why observability companies invest in feature flagging<br/>— and how you can benefit.
+Why observability companies invest in feature flagging — and how you can benefit.
 
-<div class="pt-12 text-sm opacity-70">
-  Alexandra Oberaigner · 2026
+<div class="pt-8">
+  <OpenFeatureLogo size="180px" />
 </div>
+
+<div class="pt-12">
+  <PresenterProfile name="Alexandra Oberaigner" company="Dynatrace" size="72px" />
+</div>
+
+---
+layout: intro
+---
+
+# Welcome
+
+Two big 2025–2026 acquisitions tell <span class="text-accent">different halves</span> of the same convergence story.
+
+**Dynatrace bought DevCycle.** **Datadog bought Eppo.**<br/>
+Both lean on <span class="text-green">OpenFeature</span>; neither press release mentions <span class="text-green">OpenTelemetry</span>.
+
+This talk fills that gap.
 
 ---
 
@@ -32,20 +44,20 @@ Why observability companies invest in feature flagging<br/>— and how you can b
 
 <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 mt-8">
 
-<div class="text-indigo-500 font-bold">01</div>
+<div class="text-accent font-bold">01</div>
 <div>Current happenings — two big acquisitions</div>
 
-<div class="text-indigo-500 font-bold">02</div>
+<div class="text-accent font-bold">02</div>
 <div>What is feature flagging?</div>
 
-<div class="text-indigo-500 font-bold">03</div>
+<div class="text-accent font-bold">03</div>
 <div>Why are observability companies investing in feature flagging?</div>
 
-<div class="text-indigo-500 font-bold">04</div>
+<div class="text-accent font-bold">04</div>
 <div>Live: three demo scenarios on the OpenTelemetry demo</div>
 
-<div class="text-indigo-500 font-bold">05</div>
-<div>Why OpenFeature + OpenTelemetry are more than the sum of their parts</div>
+<div class="text-accent font-bold">05</div>
+<div>Why <span class="text-green">OpenFeature</span> + <span class="text-green">OpenTelemetry</span> are more than the sum of their parts</div>
 
 </div>
 
@@ -58,37 +70,38 @@ layout: section
 Two acquisitions, one convergence
 
 ---
+layout: two-cols
+---
 
-# Two acquisitions, two halves of the same story
-
-<div class="grid grid-cols-2 gap-8 mt-6">
-
-<div>
-
-### Dynatrace acquires **DevCycle**
+# Dynatrace acquires <span class="text-accent">DevCycle</span>
 
 - Release safety, progressive delivery, kill switches
-- "Releases have become harder to understand and riskier to manage"
+- *"Releases have become harder to understand and riskier to manage"*
 - **OpenFeature called out** — Dynatrace helped establish it in 2022
 - Forward-looking: *"health-driven feature control"*
 
-</div>
+::right::
 
-<div>
-
-### Datadog acquires **Eppo**
+# Datadog acquires <span class="text-accent">Eppo</span>
 
 - Experimentation, measurement, product analytics
-- AI as centrepiece: *"compare multiple models side-by-side,<br/>determine engagement against cost tradeoffs"*
+- AI as centrepiece: *"compare multiple models side-by-side, determine engagement against cost tradeoffs"*
 - **OpenFeature not mentioned**
-- Statsig (Vijaye Raji): "experimentation is central to the modern dev stack"
+- Statsig (Vijaye Raji): *"experimentation is central to the modern dev stack"*
+
+---
+
+# What both press releases <span class="text-accent">do not</span> mention
+
+<div class="mt-12 text-2xl text-center">
+
+OpenTelemetry. Semantic conventions.<br/>
+**How flag evaluations actually correlate to telemetry.**
 
 </div>
 
-</div>
-
-<div class="mt-8 text-sm opacity-70">
-  Neither press release mentions OpenTelemetry or semantic conventions.
+<div class="mt-12 text-center text-muted">
+  That correlation is the whole point — and it's what makes this story <span class="text-green">vendor-neutral</span>.
 </div>
 
 ---
@@ -101,13 +114,13 @@ layout: section
 
 # Feature flagging in one slide
 
-A **runtime switch** that decouples *deploy* from *release*.
+A <span class="text-accent">runtime switch</span> that decouples *deploy* from *release*.
 
 <div class="grid grid-cols-2 gap-8 mt-6">
 
 <div>
 
-### What it gives you
+### <span class="text-green">What it gives you</span>
 
 - Ship dark, release later
 - Progressive rollout (1% → 5% → 100%)
@@ -119,7 +132,7 @@ A **runtime switch** that decouples *deploy* from *release*.
 
 <div>
 
-### Where the pain starts
+### <span class="text-accent">Where the pain starts</span>
 
 - Flags multiply, become permanent
 - *"Did the new variant cause the latency spike?"*
@@ -161,46 +174,33 @@ The feature-flag lifecycle is best understood with OpenTelemetry.
 
 # Three jobs observability needs flags for
 
-<div class="grid grid-cols-3 gap-6 mt-8">
-
-<div class="p-5 rounded-lg bg-indigo-50/60 border border-indigo-100">
-
-### 💰 Business impact
-Did this variant make money?<br/>
-→ **Tracking API**
-<div class="mt-3 text-xs opacity-60">Datadog / Eppo angle</div>
-
-</div>
-
-<div class="p-5 rounded-lg bg-indigo-50/60 border border-indigo-100">
-
-### 🔎 Troubleshooting
-Which cohort is slow / erroring?<br/>
-→ **SemConv on spans**
-<div class="mt-3 text-xs opacity-60">Both angles</div>
-
-</div>
-
-<div class="p-5 rounded-lg bg-indigo-50/60 border border-indigo-100">
-
-### 🛟 Releasing safely
-Canary, kill switch, rollback<br/>
-→ **Targeting + telemetry**
-<div class="mt-3 text-xs opacity-60">Dynatrace / DevCycle angle</div>
-
-</div>
-
+<div class="grid grid-cols-3 gap-4 mt-8">
+  <div class="card">
+    <h3>💰 Business impact</h3>
+    <p>Did this variant make money?<br/>→ <strong>Tracking API</strong></p>
+    <p class="text-muted text-xs mt-2">Datadog / Eppo angle</p>
+  </div>
+  <div class="card">
+    <h3>🔎 Troubleshooting</h3>
+    <p>Which cohort is slow / erroring?<br/>→ <strong>SemConv on spans</strong></p>
+    <p class="text-muted text-xs mt-2">Both angles</p>
+  </div>
+  <div class="card">
+    <h3>🛟 Releasing safely</h3>
+    <p>Canary, kill switch, rollback<br/>→ <strong>Targeting + telemetry</strong></p>
+    <p class="text-muted text-xs mt-2">Dynatrace / DevCycle angle</p>
+  </div>
 </div>
 
 <div class="mt-10">
 
-Each one only works if flag evaluations are **correlated with telemetry** — which only works because of a small, standardised set of attributes.
+Each one only works if flag evaluations are <span class="text-accent">correlated with telemetry</span> — which only works because of a small, standardised set of attributes.
 
 </div>
 
 ---
 
-# OpenTelemetry feature-flag semantic conventions
+# OpenTelemetry <span class="text-accent">feature-flag</span> semantic conventions
 
 A tiny set of standardised attributes — that's it.
 
@@ -210,21 +210,17 @@ feature_flag.variant:       personalized
 feature_flag.provider_name: flagd
 ```
 
-<div class="mt-6">
-
 Plus span event names and metric counters for evaluations and errors.
 
-</div>
+<div class="mt-8">
 
-<div class="mt-8 p-4 rounded bg-indigo-50 border border-indigo-100">
-
-These attributes are what let traces, metrics and logs **pivot on flag key or variant** — without bespoke per-vendor integration.
+These attributes are what let traces, metrics and logs <span class="text-green">pivot on flag key or variant</span> — without bespoke per-vendor integration.
 
 </div>
 
 ---
 
-# OpenFeature concepts we'll touch on stage
+# <span class="text-handwritten text-green">OpenFeature concepts</span> we'll touch on stage
 
 | Concept | One-liner |
 |---|---|
@@ -236,7 +232,7 @@ These attributes are what let traces, metrics and logs **pivot on flag key or va
 
 ---
 
-# How SemConv ends up on every span — for free
+# How SemConv ends up on every span — <span class="text-accent">for free</span>
 
 Register the OpenTelemetry hook once at startup:
 
@@ -251,13 +247,9 @@ api.add_hooks([TracingHook()])
 openfeature.AddHooks(otelhooks.NewTracesHook())
 ```
 
-<div class="mt-8">
-
 After that, **every** flag evaluation in those services automatically attaches `feature_flag.*` attributes to the active span.
 
-</div>
-
-<div class="mt-4 text-sm opacity-70">
+<div class="mt-4 text-muted text-sm">
   This is the "OpenFeature contributed SemConv to OpenTelemetry" point — made concrete.
 </div>
 
@@ -273,27 +265,25 @@ Three scenarios on the OpenTelemetry community demo
 
 # Demo setup
 
-The astronomy shop — **OpenTelemetry community demo**:<br/>
+The astronomy shop — <span class="text-accent">OpenTelemetry community demo</span>:<br/>
 <https://github.com/open-telemetry/opentelemetry-demo>
 
 <div class="mt-6">
 
 - Already uses **OpenFeature** with the **flagd** provider
 - Ships the **OpenTelemetry TracingHook** in Go and Python services
-- → SemConv attributes flow onto spans **for free** in those services
+- → SemConv attributes flow onto spans <span class="text-green">for free</span> in those services
 - Talk branch: `feat/openfeature-talk-demo` on the fork
 
 </div>
 
 ---
+layout: two-cols
+---
 
-# Demo 1 — Recommendation A/B test
+# Demo 1 · Recommendation A/B
 
-**Datadog / Eppo pillar — "is the new model actually making money?"**
-
-<div class="grid grid-cols-2 gap-8 mt-4">
-
-<div>
+**Datadog / Eppo pillar** — *"is the new model actually making money?"*
 
 **Flag:** `recommendationAlgorithm`<br/>
 **Variants:** `popularity` · `collaborative` · `personalized`<br/>
@@ -304,30 +294,24 @@ OpenFeature concepts:
 - Targeting: `personalized` for `userTier=premium`
 - **Tracking API**: `add_to_cart`, `checkout_completed`
 
-</div>
+::right::
 
-<div>
+# <span class="text-handwritten text-green">On stage</span>
 
 OTel signals:
-- Spans on `recommendation.ListRecommendations` carry `feature_flag.key/variant`
+- Spans on `recommendation.ListRecommendations` carry `feature_flag.key` / `feature_flag.variant`
 - Counters split by variant: impressions, CTR, conversion
 
-**On stage:** Grafana panel split by variant — conversion rate, AOV, p95 latency.<br/>
-Personalized lifts conversion **+X%** but adds latency.
-
-</div>
-
-</div>
+Grafana panel split by variant — conversion rate, AOV, p95 latency.<br/>
+**Personalized lifts conversion +X% but adds latency.**
 
 ---
+layout: two-cols
+---
 
-# Demo 2 — Product-catalog canary
+# Demo 2 · Product-catalog canary
 
-**Dynatrace / DevCycle pillar — releasing safely**
-
-<div class="grid grid-cols-2 gap-8 mt-4">
-
-<div>
+**Dynatrace / DevCycle pillar** — *releasing safely*
 
 **Flag:** `productCatalogCanary`<br/>
 **Variants:** `v1` · `v2` (fractional 5/25/50/100%)<br/>
@@ -338,30 +322,24 @@ OpenFeature concepts:
 - Hooks: Go OTel `TracesHook` attaches `feature_flag.*` per SemConv
 - Targeting rules edited live in flagd-ui
 
-</div>
+::right::
 
-<div>
+# <span class="text-handwritten text-green">On stage</span>
 
 OTel signals:
 - Filter spans by `feature_flag.variant=v2`
 - Error / latency spike isolated to the canary cohort
 - Flip back to `5%` → metrics recover live
 
-**On stage:** "no code change, no redeploy — the flag key is already on every span. That's the SemConv payoff."
-
-</div>
-
-</div>
+> *"No code change, no redeploy — the flag key is already on every span. That's the <span class="text-accent">SemConv payoff</span>."*
 
 ---
+layout: two-cols
+---
 
-# Demo 3 — Multi-model AI summary
+# Demo 3 · Multi-model AI summary
 
-**Shared AI theme — covers both pillars**
-
-<div class="grid grid-cols-2 gap-8 mt-4">
-
-<div>
+**Shared AI theme** — covers both pillars
 
 **Flag:** `productSummaryModel`<br/>
 **Variants:** `off` · `model-a` · `model-b`<br/>
@@ -372,19 +350,17 @@ OpenFeature concepts:
 - Evaluation context: `userTier=beta`
 - Tracking API: `summary_helpful_clicked`
 
-</div>
+::right::
 
-<div>
+# <span class="text-handwritten text-green">On stage closing beat</span>
 
-OTel signals:
-- Per-variant: **token cost**, **latency**, **error rate**
+OTel signals per variant:
+- **token cost**, **latency**, **error rate**
 - Spans carry `feature_flag.key` / `feature_flag.variant`
 
-**On stage closing beat:** flip `productSummaryModel=model-b` plus the existing `llmRateLimitError` → model-B degrades, errors visible **per variant**. Flip back → incident contained, no redeploy.
+Flip `productSummaryModel=model-b` plus the existing `llmRateLimitError` → model-B degrades, errors visible **per variant**.
 
-</div>
-
-</div>
+Flip back → <span class="text-green">incident contained, no redeploy</span>.
 
 ---
 layout: section
@@ -396,7 +372,7 @@ OpenFeature + OpenTelemetry — the vendor-neutral path
 
 ---
 
-# The unique angle
+# The <span class="text-accent">unique angle</span>
 
 |  | Dynatrace / DevCycle | Datadog / Eppo |
 |---|---|---|
@@ -405,11 +381,11 @@ OpenFeature + OpenTelemetry — the vendor-neutral path
 | **Mentions OpenFeature?** | ✅ Yes — helped establish it in 2022 | ❌ No |
 | **Mentions OpenTelemetry / SemConv?** | ❌ No | ❌ No |
 
-<div class="mt-8 p-4 rounded bg-indigo-50 border border-indigo-100">
+<div class="mt-8">
 
 > Dynatrace bought the release-safety half. Datadog bought the experimentation half.<br/>
-> Both lean on OpenFeature; neither mentions OpenTelemetry.<br/>
-> The **OpenFeature + OTel SemConv** combination is the only **vendor-neutral** path through this convergence.
+> Both lean on <span class="text-green">OpenFeature</span>; neither mentions <span class="text-green">OpenTelemetry</span>.<br/>
+> The **OpenFeature + OTel SemConv** combination is the only <span class="text-accent">vendor-neutral</span> path through this convergence.
 
 </div>
 
@@ -419,31 +395,51 @@ OpenFeature + OpenTelemetry — the vendor-neutral path
 
 <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-5 mt-8">
 
-<div class="text-indigo-500 font-bold text-2xl">1</div>
+<div class="text-accent font-bold text-2xl">1</div>
 <div>Flag evaluations are first-class telemetry — once you register one hook.</div>
 
-<div class="text-indigo-500 font-bold text-2xl">2</div>
+<div class="text-accent font-bold text-2xl">2</div>
 <div>SemConv is the standardisation layer Dynatrace and Datadog implicitly need but don't advertise.</div>
 
-<div class="text-indigo-500 font-bold text-2xl">3</div>
-<div>OpenFeature + OpenTelemetry is the vendor-neutral version of the same convergence story.</div>
+<div class="text-accent font-bold text-2xl">3</div>
+<div><span class="text-green">OpenFeature</span> + <span class="text-green">OpenTelemetry</span> is the vendor-neutral version of the same convergence story.</div>
 
-<div class="text-indigo-500 font-bold text-2xl">4</div>
+<div class="text-accent font-bold text-2xl">4</div>
 <div>You can adopt it today: <code>add_hooks([TracingHook()])</code> on a service you already run.</div>
 
 </div>
 
 ---
-layout: center
-class: text-center
+
+# Getting started
+
+<div class="grid grid-cols-3 gap-4 mt-6">
+  <div class="card text-center">
+    <h3>Learn</h3>
+    <p>Visit <a href="https://openfeature.dev">openfeature.dev</a> and the OTel SemConv docs</p>
+  </div>
+  <div class="card text-center">
+    <h3>Try</h3>
+    <p>Run the <a href="https://github.com/open-telemetry/opentelemetry-demo">OTel community demo</a> — flags already wired</p>
+  </div>
+  <div class="card text-center">
+    <h3>Connect</h3>
+    <p>Chat with us on <a href="https://cloud-native.slack.com/archives/C0344AANLA1">#openfeature</a> in CNCF Slack</p>
+  </div>
+</div>
+
+<div class="mt-10 text-center">
+  <QRCode url="https://github.com/alexandraoberaigner/talk-observability-and-feature-flagging" size="160px" />
+</div>
+
+---
+layout: end
 ---
 
-# Thank you
+# Thank You
 
 Questions?
 
-<div class="mt-12 text-sm opacity-70">
-
-[github.com/alexandraoberaigner/talk-observability-and-feature-flagging](https://github.com/alexandraoberaigner/talk-observability-and-feature-flagging)
-
+<div class="mt-8">
+  <OpenFeatureLogo size="200px" />
 </div>
