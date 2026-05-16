@@ -3,7 +3,7 @@ theme: '@openfeature/slidev-theme-open-feature'
 title: Observability and Feature Flagging
 info: |
   ## Observability and Feature Flagging
-  Why observability companies invest in feature flagging, and how you can benefit.
+  What OpenFeature and OpenTelemetry give you, on any stack you already run.
 highlighter: shiki
 lineNumbers: false
 drawings:
@@ -15,7 +15,7 @@ layout: cover
 
 # Observability and <span class="text-accent">Feature Flagging</span>
 
-Why observability companies invest in feature flagging, and how you can benefit.
+What OpenFeature and OpenTelemetry give you, on any stack you already run.
 
 <div class="pt-8">
   <OpenFeatureLogo size="180px" />
@@ -37,7 +37,7 @@ layout: section
 # Two acquisitions <br /> in twelve months.
 
 <!--
-Set the stage. Observability and feature flagging are converging, and the clearest signal is in the M&A pages of two observability vendors.
+We open here because it is the clearest external signal that observability and feature flagging are converging. This talk is not about the acquisitions and not about either company. Everything after this slide is about the open-source layer that any practitioner can use, regardless of which observability backend they happen to run.
 -->
 
 ---
@@ -81,7 +81,7 @@ Set the stage. Observability and feature flagging are converging, and the cleare
 </div>
 
 <!--
-Dynatrace bought DevCycle in January 2026. Datadog bought Eppo in May 2025. Two of the biggest observability vendors made significant investments in feature flagging within twelve months of each other. This talk is not about the acquisitions. It is about the convergence they represent.
+Dynatrace bought DevCycle in January 2026. Datadog bought Eppo in May 2025. Two of the biggest observability vendors made significant investments in feature flagging within twelve months of each other. We use this as evidence that the convergence is real, then move past it. The talk is about what the open-source layer underneath gives you regardless of vendor.
 -->
 
 ---
@@ -110,7 +110,7 @@ This is the talk's question. The audience leaves with an answer that is not vend
 <div>Three live demos on the OpenTelemetry community demo</div>
 
 <div class="text-accent font-bold">04</div>
-<div>Why the open standards are the answer to "why now"</div>
+<div>What the open standards give you, on any stack you already run</div>
 
 </div>
 
@@ -182,7 +182,7 @@ That single sentence is the whole concept. Deploy is a build-and-restart event. 
 - "Did the new variant cause the spike?"
 - "Is this rollout moving the KPI?"
 - Telemetry has no idea flags exist
-- <span class="text-green">This is the gap.</span>
+- <span class="text-green">This is what the open standards close.</span>
 
 </v-clicks>
 
@@ -262,19 +262,17 @@ feature_flag.provider.name:  flagd
 
 <div class="mt-6">
 
-Three attributes. Plus standardised event names and metric counters. That is the contract.
+Three attributes. Plus standardised event names and metric counters. (TODO)
 
 </div>
 
 <!--
-SemConv is a small, boring, important piece of standardisation. The reason it matters: with these attribute names agreed on, any backend can pivot any signal on flag key or variant. No bespoke per-vendor integration.
-
-This SemConv was a direct collaboration between the OpenFeature and OpenTelemetry communities. That collaboration is the talk's punchline.
+SemConv is a small, important piece of standardisation. With these attribute names agreed on, any backend you happen to run can pivot any signal on flag key or variant. No bespoke per-vendor integration. The OpenFeature and OpenTelemetry communities collaborated directly on this, which is why it works as cleanly as it does.
 -->
 
 ---
 
-# The contract, in one line
+# Wiring things up
 
 ```python
 # Python
@@ -338,6 +336,126 @@ The talk runs on a fork of the OpenTelemetry community demo, with three demo-spe
 -->
 
 ---
+layout: default
+---
+
+# Inside the astronomy shop
+
+
+
+<div class="flex justify-center items-center">
+
+```mermaid {scale: 0.39, theme: 'neutral'}
+graph TD
+accounting(Accounting):::dotnet
+ad(Ad):::java
+cache[(Cache<br/>&#40Valkey&#41)]
+cart(Cart):::dotnet
+checkout(Checkout):::golang
+currency(Currency):::cpp
+email(Email):::ruby
+flagd(Flagd):::golang
+flagd-ui(Flagd-ui):::elixir
+fraud-detection(Fraud Detection):::kotlin
+frontend(Frontend):::typescript
+frontend-proxy(Frontend Proxy <br/>&#40Envoy&#41):::cpp
+image-provider(Image Provider <br/>&#40nginx&#41):::cpp
+llm(LLM):::python
+load-generator([Load Generator]):::python
+payment(Payment):::javascript
+product-catalog(Product Catalog):::golang
+product-reviews(Product Reviews):::python
+quote(Quote):::php
+recommendation(Recommendation):::python
+shipping(Shipping):::rust
+queue[(queue<br/>&#40Kafka&#41)]:::java
+react-native-app(React Native App):::typescript
+postgresql[(Database<br/>&#40PostgreSQL&#41)]
+
+accounting ---> postgresql
+
+ad ---->|gRPC| flagd
+
+checkout -->|gRPC| currency
+checkout -->|gRPC| cart
+checkout -->|TCP| queue
+
+cart --> cache
+cart -->|gRPC| flagd
+
+checkout -->|gRPC| payment
+checkout --->|HTTP| email
+checkout -->|gRPC| product-catalog
+checkout -->|HTTP| shipping
+
+fraud-detection -->|gRPC| flagd
+
+frontend -->|gRPC| ad
+frontend -->|gRPC| currency
+frontend -->|gRPC| cart
+frontend -->|gRPC| checkout
+frontend -->|HTTP| shipping
+frontend ---->|gRPC| recommendation
+frontend -->|gRPC| product-catalog
+frontend -->|gRPC| product-reviews
+
+frontend-proxy -->|gRPC| flagd
+frontend-proxy -->|HTTP| frontend
+frontend-proxy -->|HTTP| flagd-ui
+frontend-proxy -->|HTTP| image-provider
+
+llm -->|gRPC| flagd
+llm ---> product-reviews
+
+payment -->|gRPC| flagd
+
+product-reviews -->|gRPC| flagd
+product-reviews -->|gRPC| product-catalog
+product-reviews -->|gRPC| llm
+product-reviews ---> postgresql
+
+queue -->|TCP| accounting
+queue -->|TCP| fraud-detection
+
+recommendation -->|gRPC| flagd
+recommendation -->|gRPC| product-catalog
+
+shipping -->|HTTP| quote
+
+Internet -->|HTTP| frontend-proxy
+load-generator -->|HTTP| frontend-proxy
+react-native-app -->|HTTP| frontend-proxy
+
+classDef dotnet fill:#178600,color:white;
+classDef cpp fill:#f34b7d,color:white;
+classDef elixir fill:#b294bb,color:black;
+classDef golang fill:#00add8,color:black;
+classDef java fill:#b07219,color:white;
+classDef javascript fill:#f1e05a,color:black;
+classDef kotlin fill:#560ba1,color:white;
+classDef php fill:#4f5d95,color:white;
+classDef python fill:#3572A5,color:white;
+classDef ruby fill:#701516,color:white;
+classDef rust fill:#dea584,color:black;
+classDef typescript fill:#e98516,color:black;
+
+style recommendation stroke:#000000,stroke-width:8px
+style llm stroke:#000000,stroke-width:8px
+style product-catalog stroke:#000000,stroke-width:8px
+style checkout stroke:#000000,stroke-width:8px
+style cart stroke:#000000,stroke-width:8px
+style frontend stroke:#000000,stroke-width:8px
+style flagd stroke:#000000,stroke-width:8px
+style product-reviews stroke:#000000,stroke-width:8px
+```
+
+</div>
+
+<!--
+All services instrumented with OpenTelemetry. Feature flags via flagd.
+-->
+
+---
 layout: two-cols
 ---
 
@@ -347,7 +465,7 @@ layout: two-cols
 Service: `product-catalog` (Go)
 
 <div class="mt-4 text-sm text-muted">
-Fowler category: <span class="text-green">release toggle</span>. Short-lived, percentage-based.
+Flag category: <span class="text-green">release toggle</span>. Short-lived, percentage-based.
 </div>
 
 ::right::
@@ -381,7 +499,7 @@ layout: two-cols
 Service: `llm` (Python)
 
 <div class="mt-4 text-sm text-muted">
-Fowler category: <span class="text-green">ops toggle</span>. Cost and quality comparison. Incident kill switch.
+Flag category: <span class="text-green">ops toggle</span>. Cost and quality comparison. Incident kill switch.
 </div>
 
 ::right::
@@ -414,7 +532,7 @@ Variants: `popularity`, `collaborative`, `personalized`<br/>
 Service: `recommendation` (Python)
 
 <div class="mt-4 text-sm text-muted">
-Fowler categories: <span class="text-green">experiment</span> plus <span class="text-green">permissioning</span>. Premium users get personalized; the rest are split 50/50.
+Flag categories: <span class="text-green">experiment</span> plus <span class="text-green">permissioning</span>. Premium users get personalized; the rest are split 50/50.
 </div>
 
 ::right::
@@ -448,13 +566,13 @@ Closing beat of the demo arc. The recommendation service logs the user id and th
 layout: section
 ---
 
-# 04 · Why now
+# 04 · Why now?
 
-The standards story.
+Safe releases, AI risk, experimentation.
 
 ---
 
-# What the press releases say
+# Two stories, one foundation (TODO)
 
 <div class="text-sm">
 
@@ -462,55 +580,70 @@ The standards story.
 |---|---|---|
 | **Centre of gravity** | Release safety, progressive delivery | Experimentation, product analytics |
 | **Headline use case** | Risk reduction, kill switches | Compare AI models, engagement vs cost |
-| **Mentions OpenFeature** | <span class="text-green">Yes</span>. Dynatrace co-founded it in 2022 | No |
-| **Mentions OpenTelemetry or SemConv** | No | No |
 
 </div>
 
 <div class="mt-8">
 
-Both lean on <span class="text-green">OpenFeature</span> for the control plane.<br/>
-Neither names the telemetry standard underneath.
+Different framings of the same convergence. Both rely on a layer underneath that you can use directly:
+
+</div>
+
+<div class="mt-4 grid grid-cols-2 gap-6">
+
+<div>
+
+### <span class="text-green">OpenFeature</span>
+The control plane. Your code, your evaluation context, your hooks.
+
+</div>
+
+<div>
+
+### <span class="text-green">OpenTelemetry SemConv</span>
+The correlation layer. Flag attributes on every signal, every backend.
+
+</div>
 
 </div>
 
 <!--
-The framing is different. Dynatrace led with release safety. Datadog led with experimentation. Both are converging on the full picture; they just foreground different slices. What matters for us: the control plane is OpenFeature for both, and the telemetry plane works because of the OpenTelemetry feature-flag semantic conventions. That second piece is not in either press release. It is what makes the whole thing portable.
+The two vendors emphasize different facets of the same convergence. Dynatrace led with release safety. Datadog led with experimentation. We use them as the hook, not the message. The message is that the layer underneath belongs to you. Your application talks to OpenFeature, not a vendor SDK. Your telemetry follows the OpenTelemetry feature-flag semantic conventions, regardless of which backend you send signals to. That layer is open source. That layer is yours.
 -->
 
 ---
 layout: statement
 ---
 
-# OpenFeature + OpenTelemetry SemConv<br/>is the vendor-neutral path through that convergence.
+# OpenFeature + OpenTelemetry SemConv<br/>is yours, on any stack you already run.
 
 <!--
-This is the talk's thesis in one line. The convergence is real. The vendor stories are real. But the durable, portable version of the story is the open standards layer. Pick your vendor, switch your vendor, run your own stack. The hook, the attributes, the correlation, all of it keeps working.
+The talk's thesis in one line. The convergence is real. The vendor stories are real. The value layer underneath them is open, vendor-neutral, and adoptable today. Pick any backend, swap any backend, run your own. The hook, the attributes, the correlation, all of it keeps working.
 -->
 
 ---
 
-# Takeaways
+# Takeaways (TODO)
 
 <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-6 mt-8">
 
 <div class="text-accent font-bold text-2xl" v-click>1</div>
-<div v-after>Flag evaluations become first-class telemetry the moment you register one hook.</div>
+<div v-after>One hook turns every flag evaluation into first-class telemetry.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>2</div>
-<div v-after>SemConv is the standardisation layer the vendors implicitly need, and rarely advertise.</div>
+<div v-after>SemConv lets you pivot traces, metrics, and logs on flag key or variant. No bespoke integration per backend.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>3</div>
-<div v-after><span class="text-green">OpenFeature</span> and <span class="text-green">OpenTelemetry</span> together are the vendor-neutral version of the same story.</div>
+<div v-after><span class="text-green">OpenFeature</span> and <span class="text-green">OpenTelemetry</span> are open standards. Pick any vendor, swap any vendor, run your own stack. The code above stays the same.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>4</div>
-<div v-after>You can adopt it today. The hook is one line on a service you already run.</div>
+<div v-after>Adoptable today. One line on a service you already run.</div>
 
 </div>
 
 ---
 
-# Get started
+# Get started (TODO)
 
 <div class="grid grid-cols-3 gap-4 mt-6">
   <div class="card text-center">
