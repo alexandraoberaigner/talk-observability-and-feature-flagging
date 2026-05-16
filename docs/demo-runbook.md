@@ -200,11 +200,11 @@ instantly."*
 
 ### By total time available
 
-| Total | Demos |
+| Total | What to cover |
 |---|---|
-| **4 min** | Demo 1 (Jaeger + dashboard) |
-| **6 min** | Demo 1 complete |
-| **8 min** | Demo 1 complete + Demo 2 (baseline → rollback) |
-| **9 min** | Demo 1 complete + Demo 2 complete |
-| **11 min** | Demo 1 complete + Demo 2 complete + Demo 3 (flip + kill switch) |
-| **12 min** | All three demos complete |
+| **4 min** | Demo 1: Jaeger hook + dashboard panels |
+| **6 min** | Demo 1: + AOV table + live flag flip |
+| **8 min** | Demo 1 + Demo 2: baseline → 25% + low severity → rollback |
+| **9 min** | Demo 1 + Demo 2: + escalation to critical |
+| **11 min** | Demo 1 + Demo 2 + Demo 3: flip to model-b + kill switch |
+| **12 min** | Demo 1 + Demo 2 + Demo 3: + error isolation |
