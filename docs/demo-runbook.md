@@ -182,21 +182,24 @@ instantly."*
 
 ## Timing guide
 
-| Demo | Short | Full |
+### Per demo
+
+| Demo | Steps | Time |
 |---|---|---|
-| **Demo 1** — Recommendation A/B | 2 min: Jaeger hook + dashboard panels | 4 min: + AOV table + live flag flip |
-| **Demo 2** — Canary rollout | 2 min: baseline → 25% + low severity → rollback | 3 min: full escalation to critical |
-| **Demo 3** — AI model kill switch | 2 min: flip to model-b + kill switch | 3 min: + error isolation per variant |
+| **Demo 1** — Recommendation A/B | Jaeger hook → dashboard panels | 2 min |
+| | + AOV table + live flag flip | +2 min |
+| **Demo 2** — Canary rollout | Baseline → step to 25% + low severity → rollback | 2 min |
+| | + escalation to 50%/75% + critical | +1 min |
+| **Demo 3** — AI model kill switch | Flip to model-b → kill switch | 2 min |
+| | + error isolation per variant | +1 min |
 
-### By total time slot
+### By total time available
 
-| Total time | What to show |
+| Total | Demos |
 |---|---|
-| **4 min** | Demo 1 short |
-| **5 min** | Demo 2 short |
-| **6 min** | Demo 1 full |
-| **7 min** | Demo 1 short + Demo 2 short |
-| **9 min** | Demo 1 full + Demo 2 short |
-| **10 min** | Demo 1 full + Demo 2 full |
-| **12 min** | Demo 1 full + Demo 2 full + Demo 3 short |
-| **13 min** | Demo 1 full + Demo 2 full + Demo 3 full |
+| **4 min** | Demo 1 (Jaeger + dashboard) |
+| **6 min** | Demo 1 complete |
+| **8 min** | Demo 1 complete + Demo 2 (baseline → rollback) |
+| **9 min** | Demo 1 complete + Demo 2 complete |
+| **11 min** | Demo 1 complete + Demo 2 complete + Demo 3 (flip + kill switch) |
+| **12 min** | All three demos complete |
