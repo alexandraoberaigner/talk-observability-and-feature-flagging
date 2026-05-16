@@ -66,8 +66,60 @@ contributed to.
 
 | Slot | Example | Maps to acquisition | Pillar from agenda |
 |---|---|---|---|
-| 1 | Recommendation algorithm A/B + tracking | Datadog / Eppo | Business case — tracking |
-| 2 | Product-catalog progressive rollout (canary) | Dynatrace / DevCycle | Releasing safely; troubleshooting via SemConv |
-| 3 | Multi-model AI summary with cost/quality tracking and kill switch | Both — AI is the shared theme | Cost/quality experimentation → incident response |
+| 1 | Recommendation algorithm A/B + AOV correlation | Datadog / Eppo | Business case — experimentation |
+| 2 | Product-catalog progressive rollout (canary) | Dynatrace / DevCycle | Releasing safely; observability without code |
+| 3 | Multi-model AI summary + kill switch | Both — AI is the shared theme | Cost/quality experimentation → incident response |
 
-Detailed scenario specs live in [demo-spec.md](demo-spec.md).
+Detailed scenario specs and slide suggestions: [demo-spec.md](demo-spec.md).  
+Stage runbook and setup instructions: [demo-runbook.md](demo-runbook.md).
+
+## The demo arc
+
+The three demos build on each other to tell one coherent story:
+
+**Demo 1** establishes the foundation: *you get telemetry for free with one
+line of code.* The TracingHook attaches `feature_flag.*` attributes to every
+span — no custom instrumentation. The audience sees Jaeger traces, Grafana
+panels, and AOV correlation across services, all without writing telemetry
+code. The closing line: *"Personalized recommendations drive 5× larger
+baskets. The checkout service has no idea the flag exists."*
+
+**Demo 2** shows the same infrastructure handling a different problem:
+release safety. The same SemConv attributes that power the A/B test
+dashboard now power a canary regression dashboard. Step up the rollout,
+watch errors appear, roll back, watch them disappear. *"No deploy. No
+restart. The flag key was already on every span."*
+
+**Demo 3** (closing beat) brings the two pillars together: AI
+experimentation (Datadog framing) becomes an incident kill switch (Dynatrace
+framing) using the exact same `feature_flag.*` attributes. *"One open
+standard. All use cases."*
+
+## Suggested talk structure
+
+```
+1. News hook (2 min)
+   - Dynatrace buys DevCycle. Datadog buys Eppo. Neither press release 
+     mentions OpenTelemetry. Why not?
+
+2. Background (3 min)
+   - Feature flags in the SDLC. Why they need observability.
+   - OpenFeature: the open standard for flag evaluation.
+   - OpenTelemetry SemConv: feature_flag.key / feature_flag.variant.
+   - "These two communities collaborated on this. Let's see what that buys."
+
+3. Demo 1 — Recommendation A/B (4 min)
+   [see demo-spec.md]
+
+4. Demo 2 — Canary rollout (3 min)
+   [see demo-spec.md]
+
+5. Demo 3 — AI model + kill switch (3 min, optional)
+   [see demo-spec.md]
+
+6. Synthesis (3 min)
+   - OpenFeature + OTel = vendor-neutral path through the convergence.
+   - Dynatrace bought release safety. Datadog bought experimentation.
+     Neither vendor owns the telemetry layer — that's the open standard.
+   - What's next: autonomous rollback, SLO-driven flag control.
+```
