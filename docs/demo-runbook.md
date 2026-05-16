@@ -187,3 +187,16 @@ instantly."*
 | **Demo 1** — Recommendation A/B | 2 min: Jaeger hook + dashboard panels | 4 min: + AOV table + live flag flip |
 | **Demo 2** — Canary rollout | 2 min: baseline → 25% + low severity → rollback | 3 min: full escalation to critical |
 | **Demo 3** — AI model kill switch | 2 min: flip to model-b + kill switch | 3 min: + error isolation per variant |
+
+### By total time slot
+
+| Total time | What to show |
+|---|---|
+| **4 min** | Demo 1 short |
+| **5 min** | Demo 2 short |
+| **6 min** | Demo 1 full |
+| **7 min** | Demo 1 short + Demo 2 short |
+| **9 min** | Demo 1 full + Demo 2 short |
+| **10 min** | Demo 1 full + Demo 2 full |
+| **12 min** | Demo 1 full + Demo 2 full + Demo 3 short |
+| **13 min** | Demo 1 full + Demo 2 full + Demo 3 full |
