@@ -1,8 +1,8 @@
 ---
 theme: '@openfeature/slidev-theme-open-feature'
-title: Observability and Feature Flagging
+title: Why Are Observability Companies Investing in Feature Flagging?
 info: |
-  ## Observability and Feature Flagging
+  ## Why Are Observability Companies Investing in Feature Flagging?
   What OpenFeature and OpenTelemetry give you, on any stack you already run.
 highlighter: shiki
 lineNumbers: false
@@ -13,7 +13,7 @@ mdc: true
 layout: cover
 ---
 
-# Observability and <span class="text-accent">Feature Flagging</span>
+# Why Are Observability Companies <br/>Investing in <span class="text-accent">Feature Flagging</span>?
 
 What OpenFeature and OpenTelemetry give you, on any stack you already run.
 
