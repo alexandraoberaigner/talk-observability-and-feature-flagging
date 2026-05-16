@@ -4,8 +4,7 @@ The live portion of the talk runs on top of the **OpenTelemetry community
 demo** (astronomy shop) — <https://github.com/open-telemetry/opentelemetry-demo>.
 
 The working fork lives at
-<https://github.com/alexandraoberaigner/opentelemetry-demo>, branch
-`feat/talk-demo`.
+<https://github.com/alexandraoberaigner/opentelemetry-demo>
 
 The full stage runbook is in [demo-runbook.md](demo-runbook.md).
 
@@ -13,7 +12,7 @@ The full stage runbook is in [demo-runbook.md](demo-runbook.md).
 
 ## Demo 1 — Recommendation Algorithm A/B Test ✅ Implemented
 
-**~4 min on stage · Maps to: Datadog / Eppo (experimentation) pillar**
+**~4 min on stage · Maps to: Experimentation**
 
 **Flag:** `recommendationAlgorithm` (string)  
 **Variants:** `popularity` (default) | `collaborative` | `personalized`  
@@ -37,7 +36,7 @@ Then: *"Is the new model actually making money?"*
    latency by variant (`personalized` is visibly higher — the model is heavier).
    Collector transform + spanmetrics connector + Prometheus. All YAML.
 
-3. **AOV correlation** — The recommendation service logs `app.user.id` and
+3. **Average Order Value correlation** — The recommendation service logs `app.user.id` and
    `app.recommendation.algorithm`. The checkout service logs `app.user.id`
    and `app.order.amount`. OpenSearch PPL joins them on the session ID.
    Premium users (`personalized`) buy larger baskets → ~5× higher AOV.
@@ -62,7 +61,7 @@ Then: *"Is the new model actually making money?"*
 
 ## Demo 2 — Product Catalog Progressive Rollout ✅ Implemented
 
-**~3 min on stage · Maps to: Dynatrace / DevCycle (release safety) pillar**
+**~3 min on stage · Maps to: Release safety**
 
 **Flags:** `productCatalogCanary` (string, v1/v2) + `productCatalogV2Severity` (int, 0/15/40/75)  
 **Service:** `product-catalog` (Go)  

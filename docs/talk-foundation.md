@@ -1,6 +1,11 @@
 # Talk Foundation
 
-Length: 45min slot, including live demo, Q&A
+- Length: 45min slot, including live demo, Q&A
+- Audience: Cloud-native conference attendees. 
+- Level: Novice
+- Unique angle: The talk is not about the acquisitions themselves & should not be an advertisement in any way of either of these companies, but about the convergence they represent — and how OpenFeature + OpenTelemetry are the only vendor-neutral way to navigate that convergence. The talk uses the acquisitions as a narrative hook to explore this broader trend and its implications for practitioners.
+- Speaker background: both maintainers of OpenFeature.
+- Open-source: the talk is based on open-source standards and tools, we only use Dynatrace for parts of the demos.
 
 ## Abstract
 
@@ -34,12 +39,11 @@ Use these references as foundational research for the talk. When in doubt, webse
 - [OpenTelemetry documentation](https://opentelemetry.io/docs/)
 
 
-
 ## Agenda (current draft)
 
 1. **Current happenings** — Dynatrace acquires DevCycle, Datadog acquires
    Eppo. Blog posts and news framing.
-2. **What is feature flagging?** Challenges. SDLC with feature flags.
+2. **What is feature flagging?** What is OpenFeature? Architecture (client, providers, spec; diagram). Challenges. SDLC with feature flags.
 3. **Why are observability companies investing in feature flagging?**
    - The feature-flag lifecycle is best understood with OpenTelemetry.
    - Understanding the impact of new features:
@@ -68,14 +72,13 @@ Both vendors are converging on **OpenFeature for the control plane** but
 neither press release talks about how the resulting flag evaluations
 correlate to telemetry. That correlation only works because of the
 **OpenTelemetry feature-flag semantic conventions** — `feature_flag.key`,
-`feature_flag.variant`, `feature_flag.provider_name` — that OpenFeature
-contributed to.
+`feature_flag.variant`, `feature_flag.provider_name` — result of a collaboration with OpenFeature.
 
-> **The unique angle of this talk:** Dynatrace bought the release-safety
-> half. Datadog bought the experimentation half. Both lean on OpenFeature;
-> neither mentions OpenTelemetry. The OpenFeature + OTel SemConv combination
-> is the only **vendor-neutral** path through this convergence — and that is
-> what we demonstrate live.
+**The unique angle of this talk:** Dynatrace bought the release-safety
+half. Datadog bought the experimentation half. Both lean on OpenFeature;
+neither mentions OpenTelemetry. The OpenFeature + OTel SemConv combination
+is the only **vendor-neutral** path through this convergence — and that is
+what we demonstrate live to show how you can benefit, regardless of which vendor you choose.
 
 ## Mapping examples to pillars
 
