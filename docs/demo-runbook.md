@@ -182,8 +182,8 @@ instantly."*
 
 ## Timing guide
 
-| Demo | Skip | Short | Full |
-|---|---|---|---|
-| **Demo 1** — Recommendation A/B | — | 2 min: Jaeger hook + dashboard only | 4 min: + AOV table + live flag flip |
-| **Demo 2** — Canary rollout | — | 2 min: baseline → 25% + low → rollback | 3 min: full escalation to critical |
-| **Demo 3** — AI model kill switch | — | 2 min: flip + kill switch | 3 min: + error isolation per variant |
+| Demo | Short | Full |
+|---|---|---|
+| **Demo 1** — Recommendation A/B | 2 min: Jaeger hook + dashboard panels | 4 min: + AOV table + live flag flip |
+| **Demo 2** — Canary rollout | 2 min: baseline → 25% + low severity → rollback | 3 min: full escalation to critical |
+| **Demo 3** — AI model kill switch | 2 min: flip to model-b + kill switch | 3 min: + error isolation per variant |
