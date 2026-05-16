@@ -40,10 +40,15 @@ make loadgen-background  # warms up services (Ctrl+C when dashboard shows data)
 
 ### Load generator commands
 
+Each scenario runs until Ctrl+C. Stop the current one before starting the next.
+
 ```bash
-make loadgen-background  # warm up (run while setting up, Ctrl+C when ready)
-make loadgen-demo1       # Demo 1 traffic — recommendation + checkout (run continuously)
-make loadgen-demo2       # Demo 2 traffic — product catalog canary (run continuously)
+make loadgen-background  # warm up — run while setting up, Ctrl+C when dashboard has data
+make loadgen-demo1       # Demo 1 — recommendation + checkout flows
+# Ctrl+C when Demo 1 is done, then:
+make loadgen-demo2       # Demo 2 — product catalog canary traffic
+# Ctrl+C when Demo 2 is done, then:
+# make loadgen-demo3     # Demo 3 — coming in next PR
 ```
 
 ### Validation checklist
