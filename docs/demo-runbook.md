@@ -182,10 +182,22 @@ instantly."*
 
 ## Timing guide
 
-| Time available | Show |
+Each demo has a minimum and full version:
+
+| Demo | Minimum | Full |
+|---|---|---|
+| **Demo 1** — Recommendation A/B | 2 min (Jaeger + dashboard only) | 4 min (+ AOV table + live flip) |
+| **Demo 2** — Canary rollout | 2 min (baseline → 25% → rollback) | 3 min (full escalation to critical) |
+| **Demo 3** — AI model kill switch | 2 min (flip + kill switch) | 3 min (+ error isolation) |
+
+### By total time available
+
+| Time slot | What to show |
 |---|---|
-| 4 min | Demo 1: Jaeger hook + Grafana dashboard |
-| 7 min | Demo 1 full (AOV + live flip) |
-| 10 min | Demo 1 + Demo 2 (skip step 4 of canary) |
-| 13 min | All of Demo 1 + Demo 2 full |
-| 16 min | All three demos |
+| **5 min** | Demo 1 minimum: Jaeger hook + dashboard panels |
+| **7 min** | Demo 1 full: Jaeger + dashboard + AOV + live flip |
+| **10 min** | Demo 1 full + Demo 2 minimum |
+| **12 min** | Demo 1 full + Demo 2 full |
+| **15 min** | All three demos (minimum versions) |
+| **17 min** | Demo 1 full + Demo 2 full + Demo 3 minimum |
+| **20 min** | All three demos full |
