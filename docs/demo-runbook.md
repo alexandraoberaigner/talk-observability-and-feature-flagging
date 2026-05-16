@@ -161,15 +161,16 @@ v2 always adds +50ms baseline latency. Severity escalates it.
 
 ---
 
-## Demo 3 — Multi-model AI Summary (~3 min)
+## Demo 3 — Multi-model AI Summary (~3 min) 🔜 Next PR
 
 **Flag:** `productSummaryModel` · **Service:** `llm` (Python)
 
-**Story:** *"Compare two AI models on latency and quality. Kill the bad one instantly."*
+**Story:** *"Compare two AI models on latency and quality. Kill the bad one
+instantly."*
 
-> ⚠️ Still to wire: `productSummaryModel` branching behaviour in `app.py` and per-variant cost/latency metrics.
+> Implementation in a separate PR. Steps below are the planned flow.
 
-### Steps (once wired)
+### Steps
 
 1. Show baseline traffic on `model-a` — latency and cost panels
 2. **flagd-ui** → flip to `model-b` → watch metrics shift

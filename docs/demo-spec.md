@@ -119,7 +119,7 @@ severity flag evaluation on the same span.
 
 ---
 
-## Demo 3 — Multi-model AI Summary ⚠️ Partially implemented
+## Demo 3 — Multi-model AI Summary 🔜 Separate PR
 
 **~3 min on stage · Maps to: both pillars (AI is the shared theme)**
 
@@ -127,23 +127,27 @@ severity flag evaluation on the same span.
 **Variants:** `off` (default) | `model-a` | `model-b`  
 **Service:** `llm` (Python)
 
+> Implementation coming in a separate PR on the demo repo.
+
 ### The story
 
 *"Compare two AI models on latency and quality. Kill the bad one instantly.
 Same flag, same SemConv — the infrastructure built for Demo 1 powers this
 incident response too."*
 
-### What it will show (once wired)
+### What it will show
 
-1. Baseline on `model-a` — latency and cost metrics per variant
+1. Baseline on `model-a` — latency and cost metrics per variant in Grafana
 2. Flip to `model-b` — metrics shift, `model-b` spans carry `feature_flag.variant=model-b`
 3. Enable `llmRateLimitError=on` — errors isolated to `model-b` cohort
-4. Kill switch — flip flag to `off`, errors stop
+4. Kill switch — flip flag to `off`, errors stop immediately
 
-### Still to implement
+### Still to implement (next PR)
 
-- Branch behaviour in `llm/app.py` based on `productSummaryModel` variant
-- Per-variant metrics: `llm.tokens.total`, `llm.requests.errors`
+- Branch behaviour in `llm/app.py` based on `productSummaryModel` variant (different simulated latency + token cost per model)
+- Per-variant metrics: token cost, request count, error rate
+- Grafana dashboard row for Demo 3
+- Stage runbook section in `demo-runbook.md`
 
 ### Key slide moment
 
