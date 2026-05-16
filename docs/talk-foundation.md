@@ -4,7 +4,7 @@
 - Audience: Cloud-native conference attendees. 
 - Level: Novice
 - Unique angle: The talk is not about the acquisitions themselves & should not be an advertisement in any way of either of these companies, but about the convergence they represent — and how OpenFeature + OpenTelemetry are the only vendor-neutral way to navigate that convergence. The talk uses the acquisitions as a narrative hook to explore this broader trend and its implications for practitioners.
-- Speaker background: both maintainers of OpenFeature.
+- Speaker background: both maintainers of OpenFeature. Lukas Reining (codecentric) & Alexandra Oberaigner (Dynatrace)
 - Open-source: the talk is based on open-source standards and tools, we only use Dynatrace for parts of the demos.
 
 ## Abstract

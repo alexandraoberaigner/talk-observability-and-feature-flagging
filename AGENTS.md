@@ -37,3 +37,4 @@ Slidev presentation will be added at the project root (typically `slides.md` + S
 - Websearch openfeature.dev for OpenFeature-specific information, and opentelemetry.io for OpenTelemetry-specific information.
 - Don't mention the acquisitions without framing them in the narrative hook. The talk is not about the acquisitions, but about the convergence they represent — and how OpenFeature + OpenTelemetry are the only vendor-neutral way to navigate that convergence.
 - Include live code examples, diagrams, and animations where relevant.
+- use the ./public folder for any static assets (images, videos) and reference them in the slides with relative paths.
