@@ -21,8 +21,9 @@ Why observability companies invest in feature flagging — and how you can benef
   <OpenFeatureLogo size="180px" />
 </div>
 
-<div class="pt-12">
-  <PresenterProfile name="Alexandra Oberaigner" company="Dynatrace" size="72px" />
+<div class="pt-12 flex justify-center gap-12">
+  <PresenterProfile name="Alexandra Oberaigner" company="Dynatrace" size="72px" photo="/alexandra-oberaigner.jpg" />
+  <PresenterProfile name="Lukas Reining" company="codecentric" size="72px" photo="/lukas-reining.jpg" />
 </div>
 
 ---
@@ -68,6 +69,56 @@ layout: section
 # 01 · Current happenings
 
 Two acquisitions, one convergence
+
+---
+
+# The headlines that started it all
+
+<div class="grid grid-cols-3 gap-4 mt-6">
+
+<div class="border border-gray-600 rounded-lg overflow-hidden text-sm shadow-lg">
+  <div class="bg-gray-800 px-3 py-1 text-xs text-gray-400 flex items-center gap-2">
+    <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
+    <span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
+    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+    <span class="ml-2 truncate">dynatrace.com/news</span>
+  </div>
+  <div class="p-4 bg-gray-900">
+    <div class="text-xs text-gray-500 mb-2">DYNATRACE BLOG · MARCH 2025</div>
+    <div class="font-bold text-white leading-snug mb-2">Dynatrace acquires DevCycle to accelerate feature flag management</div>
+    <div class="text-gray-400 text-xs leading-relaxed">"Releases have become harder to understand and riskier to manage ... Dynatrace's acquisition of DevCycle brings health-driven feature control into the platform."</div>
+  </div>
+</div>
+
+<div class="border border-gray-600 rounded-lg overflow-hidden text-sm shadow-lg">
+  <div class="bg-gray-800 px-3 py-1 text-xs text-gray-400 flex items-center gap-2">
+    <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
+    <span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
+    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+    <span class="ml-2 truncate">datadoghq.com/blog</span>
+  </div>
+  <div class="p-4 bg-gray-900">
+    <div class="text-xs text-gray-500 mb-2">DATADOG BLOG · APRIL 2025</div>
+    <div class="font-bold text-white leading-snug mb-2">Datadog agrees to acquire Eppo to unify experimentation and observability</div>
+    <div class="text-gray-400 text-xs leading-relaxed">"Compare multiple AI models side-by-side, determine engagement against cost tradeoffs — experimentation is now central to the modern development stack."</div>
+  </div>
+</div>
+
+<div class="border border-gray-600 rounded-lg overflow-hidden text-sm shadow-lg">
+  <div class="bg-gray-800 px-3 py-1 text-xs text-gray-400 flex items-center gap-2">
+    <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
+    <span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
+    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+    <span class="ml-2 truncate">thenewstack.io</span>
+  </div>
+  <div class="p-4 bg-gray-900">
+    <div class="text-xs text-gray-500 mb-2">THE NEW STACK · MAY 2025</div>
+    <div class="font-bold text-white leading-snug mb-2">Why are observability giants buying feature flag companies?</div>
+    <div class="text-gray-400 text-xs leading-relaxed">"Both Dynatrace and Datadog made major feature-flag acquisitions within weeks of each other. The missing link in both announcements: OpenTelemetry."</div>
+  </div>
+</div>
+
+</div>
 
 ---
 layout: two-cols

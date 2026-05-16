@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@openfeature/slidev-theme-open-feature": "^1.1.0",
-    "@slidev/cli": "^0.49.29",
-    "vue": "^3.5.13"
+    "@slidev/cli": "^52.15.2"
   }
 }
