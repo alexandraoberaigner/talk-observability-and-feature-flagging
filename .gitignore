@@ -4,3 +4,5 @@ dist
 *.local
 .remote-assets
 components.d.ts
+.idea
+.claude/worktrees

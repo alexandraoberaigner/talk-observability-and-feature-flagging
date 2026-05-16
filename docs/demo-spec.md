@@ -2,134 +2,235 @@
 
 The live portion of the talk runs on top of the **OpenTelemetry community
 demo** (astronomy shop) — <https://github.com/open-telemetry/opentelemetry-demo>.
-The demo already uses OpenFeature with the **flagd** provider and ships the
-OpenTelemetry hook in the Go and Python services, so SemConv attributes
-flow onto spans for free in those services.
 
-A companion fork lives at
-<https://github.com/alexandraoberaigner/opentelemetry-demo>, branch
-`feat/openfeature-talk-demo`, which adds the three flags and supporting
-documentation described below.
+The working fork lives at
+<https://github.com/alexandraoberaigner/opentelemetry-demo>
 
-## Three scenarios
+The full stage runbook is in [demo-runbook.md](demo-runbook.md).
 
-### 1. Recommendation algorithm A/B test (Datadog / Eppo pillar)
+> **Stage order:** Demo 2 → Demo 3 → Demo 1. The numbers in the demo
+> headings reflect flag/service identity (and the order in which they
+> were implemented), **not** the on-stage order. On stage we open with
+> release safety (Demo 2), move through the AI angle (Demo 3), and close
+> with the business-impact AOV story (Demo 1). The sections below are
+> ordered to match the stage order.
 
-**Flag:** `recommendationAlgorithm`
-**Type:** string
-**Variants:** `popularity` (default) | `collaborative` | `personalized`
-**Service:** `recommendation` (Python — already wired with OpenFeature +
-`TracingHook`).
+---
 
-**OpenFeature concepts demonstrated:**
-- **Evaluation context** carrying `userId`, `userTier`, `region`.
-- **Targeting** — `personalized` only for `userTier=premium`, others split
-  by fractional rollout.
-- **Tracking API** — frontend records `add_to_cart` and
-  `checkout_completed` with cart value/currency.
-- **Hook** — the OTel `TracingHook` already emits SemConv attributes on
-  spans automatically.
+## Demo 2 — Product Catalog Progressive Rollout ✅ Implemented
 
-**OTel signals:**
-- Spans on `recommendation.ListRecommendations` carry `feature_flag.key`,
-  `feature_flag.variant`.
-- Counters split by variant for impressions, click-through, conversion.
+**Stage slot 1 (opener) · ~3 min on stage · Maps to: Release safety**
 
-**On stage:** Grafana panel split by variant — conversion rate, AOV, p95
-latency. The personalized variant lifts conversion +X% but adds latency.
-Live demonstration of "is the new model actually making money?"
+**Flags:** `productCatalogCanary` (string, v1/v2) + `productCatalogV2Severity` (int, 0/15/40/75)  
+**Service:** `product-catalog` (Go)  
+**Targeting:** `$flagd.targetingKey` (session ID) for deterministic per-user assignment
 
-### 2. Product-catalog progressive rollout / canary (Dynatrace / DevCycle pillar)
+### The story
 
-**Flag:** `productCatalogCanary`
-**Type:** string
-**Variants:** `v1` (default) | `v2`, with **fractional rollout** in flagd
-targeting (`5%` / `25%` / `50%` / `100%` step-up).
-**Service:** `product-catalog` (Go — already wired with OpenFeature + Go
-OTel TracesHook).
+*"Safe canary release — observable regression, instant rollback. We didn't
+touch a single monitoring configuration."*
 
-**OpenFeature concepts demonstrated:**
-- **Provider:** flagd, server-side resolution.
-- **Hooks (before/after/error)** — Go OTel TracesHook attaches
-  `feature_flag.*` attributes per SemConv on every evaluation.
-- **Targeting rules** — the demo shows the live JSON in flagd-ui changing.
+This is also where we establish the **"telemetry for free"** lesson for
+the rest of the talk: one line of hook registration is what put
+`feature_flag.evaluation` on every span.
 
-**OTel signals:** filter spans by `feature_flag.variant=v2` — error/latency
-spike isolated to the canary cohort, propagating up to checkout. Flip back
-to `5%` and metrics recover live.
+### What it shows
 
-**On stage:** "no code change, no redeploy — the flag key is already on
-every span, that's the SemConv payoff." Slide referencing Dynatrace's
-"health-driven feature control" wording: today the flip is manual, the
-natural extension is autonomous.
+1. **Baseline** — 95% v1 (green), 5% v2 (yellow). Tiny yellow latency blip.
+   *"v2 is live for 5% of users. Looks fine."*
 
-### 3. Multi-model AI summary (shared AI theme — both pillars)
+2. **Step up rollout** — 25% v2. Yellow p95 line rises above green. Errors
+   still zero. *"Hmm, slower but no errors yet."*
 
-**Flag:** `productSummaryModel`
-**Type:** string
-**Variants:** `off` (default) | `model-a` | `model-b`
-**Service:** `llm` (Python — currently uses OpenFeature but is missing the
-OTel `TracingHook`; the demo branch adds it).
+3. **Flip severity** — `productCatalogV2Severity = low`. Red errors appear
+   on the traffic panel. *"There it is."*
 
-**OpenFeature concepts demonstrated:**
-- **Hooks** — adds the missing `TracingHook` so SemConv attributes appear
-  on LLM spans.
-- **Evaluation context** with `userTier=beta` for opt-in.
-- **Tracking API** — `summary_helpful_clicked` event with engagement
-  signal.
+4. **Escalate** — 75% canary + `critical` severity. Both panels alarming.
+   *"SLO breach. Roll back."*
 
-**OTel signals:**
-- Per-variant metrics for **token cost**, **latency**, **error rate**.
-- Spans carry `feature_flag.key` / `feature_flag.variant` as SemConv
-  attributes.
+5. **Roll back** — Back to 5%, severity `none`. Panels recover in ~30 seconds.
+   *"No deploy. No restart. The flag key is already on every span — that's
+   the SemConv payoff."*
 
-**On stage closing beat:** mid-demo, flip `productSummaryModel=model-b`
-together with the existing `llmRateLimitError` to simulate model-B
-degrading. Errors visible per variant. Flip the flag back to `model-a` (or
-`off`) — incident contained without redeploy. This single example covers
-both Datadog's AI experimentation framing and Dynatrace's incident-response
-framing.
+### Key slide moments
 
-## How the SemConv attributes end up everywhere
+- **"The feature_flag.key is on every span"** — show the `app.catalog.version` attribute in Jaeger alongside the flag evaluation span event
+- **"Rollback in 30 seconds"** — the live panel recovery is the demo
 
-The OpenFeature OpenTelemetry contrib hooks are registered globally during
-service startup:
+### OpenFeature concepts demonstrated
+
+- Fractional targeting by session ID — consistent per-user assignment
+- Two-flag composition: rollout % controls who; severity controls how bad
+- `TracingHook` (Go) + collector spanevent→span attribute transform
+
+### Technical implementation notes
+
+v2 adds latency and errors scaled by `productCatalogV2Severity`:
+
+| Severity variant | Latency | Error rate |
+|---|---|---|
+| `none` (0) | +50ms | 0% |
+| `low` (15) | +140ms | 15% |
+| `high` (40) | +290ms | 40% |
+| `critical` (75) | +500ms | 75% |
+
+Dashboard uses `app.catalog.version` (set by the service) rather than
+`feature_flag.result.variant` (set by the hook) to avoid contamination from the
+severity flag evaluation on the same span.
+
+---
+
+## Demo 3 — Multi-model AI Summary 🔜 Separate PR
+
+**Stage slot 2 (middle, optional) · ~3 min on stage · Maps to: cost/quality experimentation → incident response**
+
+**Flag:** `productSummaryModel` (string)  
+**Variants:** `off` (default) | `model-a` | `model-b`  
+**Service:** `llm` (Python)
+
+> Implementation coming in a separate PR on the demo repo.
+
+### The story
+
+*"Compare two AI models on latency and quality. Kill the bad one instantly.
+Same flag, same SemConv — the infrastructure we just used for canary
+rollout powers experimentation and incident response too."*
+
+### What it will show
+
+1. Baseline on `model-a` — latency and cost metrics per variant in Grafana
+2. Flip to `model-b` — metrics shift, `model-b` spans carry `feature_flag.result.variant=model-b`
+3. Enable `llmRateLimitError=on` — errors isolated to `model-b` cohort
+4. Kill switch — flip flag to `off`, errors stop immediately
+
+### Still to implement (next PR)
+
+- Branch behaviour in `llm/app.py` based on `productSummaryModel` variant (different simulated latency + token cost per model)
+- Per-variant metrics: token cost, request count, error rate
+- Grafana dashboard row for Demo 3
+- Stage runbook section in `demo-runbook.md`
+
+### Key slide moment
+
+This is the **bridge** between the release-safety opener (Demo 2) and the
+business-impact closer (Demo 1): show that the exact same SemConv
+attributes (`feature_flag.key`, `feature_flag.result.variant`) we just
+used for canary observation now power experimentation and the incident
+kill switch. One open standard, all use cases.
+
+---
+
+## Demo 1 — Recommendation Algorithm A/B Test ✅ Implemented
+
+**Stage slot 3 (climax) · ~4 min on stage · Maps to: Experimentation / tracking — the business-impact closer**
+
+**Flag:** `recommendationAlgorithm` (string)  
+**Variants:** `popularity` (default) | `collaborative` | `personalized`  
+**Service:** `recommendation` (Python)  
+**Targeting:** `userTier=premium` → `personalized`; rest: 50/50 fractional
+
+### The story
+
+*"We've seen the same hook power release safety and AI incident response.
+Now: is the new recommendation model actually making money?"*
+
+Closing line of the whole talk: *"Personalized recommendations drive 5×
+larger baskets. The checkout service has no idea the flag exists. One
+open standard. All use cases."*
+
+### What it shows
+
+1. **The hook in Jaeger** — Open any recommendation trace. The `feature_flag.evaluation`
+   span event is there: `key`, `variant`, `reason`. Already familiar from
+   the earlier demos. One line: `api.add_hooks([TracingHook()])`.
+
+2. **Per-variant Grafana panels** — Impressions by variant (stacked), p95
+   latency by variant (`personalized` is visibly higher — the model is heavier).
+   Collector transform + spanmetrics connector + Prometheus. All YAML.
+
+3. **Average Order Value correlation** — The recommendation service logs `app.user.id` and
+   `app.recommendation.algorithm`. The checkout service logs `app.user.id`
+   and `app.order.amount`. OpenSearch PPL joins them on the session ID.
+   Premium users (`personalized`) buy larger baskets → ~5× higher AOV.
+   *"The checkout service has no idea the recommendation flag exists."*
+
+4. **Live rollout** — Flip `recommendationAlgorithm` defaultVariant to
+   `personalized` in flagd-ui. Dashboard shifts in ~30 seconds. No deploy.
+
+### Key slide moments
+
+- **"One line"** — show the `TracingHook` registration in `recommendation_server.py`
+- **"All YAML"** — show the 6-line collector transform in `otelcol-config.yml`
+- **"The checkout service doesn't know"** — show the PPL query in OpenSearch
+
+### OpenFeature concepts demonstrated
+
+- `EvaluationContext` with `userTier` (deterministically derived from session ID)
+- `TracingHook` — global hook, zero per-evaluation code
+- Fractional targeting with user-consistent assignment
+
+---
+
+## How SemConv attributes get on every span
 
 ```python
-# Python (recommendation, llm)
+# Python services (recommendation, llm)
 api.add_hooks([TracingHook()])
 ```
 
 ```go
-// Go (product-catalog)
+// Go services (product-catalog)
 openfeature.AddHooks(otelhooks.NewTracesHook())
 ```
 
-After that, **every** flag evaluation in those services automatically
-attaches SemConv-defined `feature_flag.*` attributes to the active span.
-This is the "OpenFeature contributed SemConv to OpenTelemetry" point made
-concrete.
+After that, every flag evaluation automatically attaches to the active span:
 
-## Implementation status
+```
+feature_flag.key            = "recommendationAlgorithm"
+feature_flag.result.variant = "personalized"
+feature_flag.provider_name  = "flagd"
+```
 
-See the OTel demo branch `feat/openfeature-talk-demo`, file
-`src/flagd/openfeature-talk-demo.md` for:
+The collector's `transform/sanitize_spans` processor promotes these from
+**span events** to **span attributes** so the spanmetrics connector can use
+them as Prometheus metric dimensions.
 
-- Exact flag JSON definitions.
-- Per-service code touch-points and remaining wiring.
-- A "what to flip and what to look for" runbook for stage practice.
+This is the *"OpenFeature contributed SemConv to OpenTelemetry"* point made
+concrete in a live system.
 
-## Open questions / next steps for the talk
+---
 
-1. **Backend choice on stage** — Grafana ships with the demo and is the
-   safest default; can also show Jaeger for raw spans. Decide whether to
-   show a vendor backend (Dynatrace / Datadog) screenshot for the "see, it
-   looks exactly the same with SemConv" point.
-2. **Frontend tracking calls** — currently only conceptual; need to wire
-   `client.track(...)` in the Next.js frontend (`src/frontend`) for the
-   recommendation A/B example to actually feed Grafana panels.
-3. **Targeting demo** — flagd-ui will be on stage. Decide whether to edit
-   targeting rules live or pre-stage configurations and switch between
-   them.
-4. **Slide hand-off points** — three planned slide↔demo handoffs, one per
-   example. Time-box each example to ~3 minutes.
+## Slide suggestions per demo
+
+Listed in **stage order** (slot 1 → slot 2 → slot 3).
+
+### Stage slot 1 — Demo 2 slides (Canary rollout, opener)
+
+| Slide | Content |
+|---|---|
+| "The problem" | Traditional canary: custom dashboards, manual correlation |
+| "The solution" | One flag + TracingHook = automatic observability |
+| "The regression" | Screenshot of p95 panel: yellow line rising, red errors appearing |
+| "The rollback" | Screenshot: panels recovering within 30 seconds |
+| "The punchline" | *"No deploy. No restart. The flag key was already on every span."* |
+
+### Stage slot 2 — Demo 3 slides (Multi-model AI, optional middle)
+
+> Once implemented.
+
+| Slide | Content |
+|---|---|
+| "Multi-model" | Two models, same hook, same SemConv |
+| "Cost vs quality" | Latency and token cost visible per variant |
+| "Kill switch" | Incident response without redeploy |
+| "Same substrate" | One hook just powered release safety; now it powers experimentation and incident response |
+
+### Stage slot 3 — Demo 1 slides (Recommendation A/B + AOV, climax)
+
+| Slide | Content |
+|---|---|
+| "The contract" | Show the one-line hook registration |
+| "What you get" | Screenshot of Jaeger span event with `feature_flag.*` attributes |
+| "No code" | Show the 6-line collector YAML transform |
+| "Is it making money?" | Show the Grafana AOV table — personalized 5× higher |
+| "The answer" | Quote: *"Personalized recommendations drive larger baskets — and the only telemetry code we wrote was one line."* |
