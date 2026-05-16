@@ -33,7 +33,7 @@ Slidev presentation will be added at the project root (typically `slides.md` + S
 - Use Slidev for slides. there is a skill definition in `.agents/skills/slidev/SKILL.md` with more details.
 - Don't make up facts. Webseach information or ask. Add references to the slide as footnote.
 - Zero fluff. Focus on the unique narrative hook of the talk and the value it provides to the audience.
-- Avoid AI sounding language; No empty buzzwords or generic statements. No em-dashes or parentheticals. Write like a human. Keep it concise and to the point. No over the top adjectives or adverbs.
+- Avoid AI sounding language; No empty buzzwords or generic statements. No em-dashes or parentheticals. Write like a human. Keep it concise and to the point. No over the top adjectives or adverbs. Use emojis with care.
 - Websearch openfeature.dev for OpenFeature-specific information, and opentelemetry.io for OpenTelemetry-specific information.
 - Don't mention the acquisitions without framing them in the narrative hook. The talk is not about the acquisitions, but about the convergence they represent — and how OpenFeature + OpenTelemetry are the only vendor-neutral way to navigate that convergence.
 - Include live code examples, diagrams, and animations where relevant.

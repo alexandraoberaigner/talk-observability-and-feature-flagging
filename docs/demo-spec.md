@@ -8,60 +8,18 @@ The working fork lives at
 
 The full stage runbook is in [demo-runbook.md](demo-runbook.md).
 
----
-
-## Demo 1 — Recommendation Algorithm A/B Test ✅ Implemented
-
-**~4 min on stage · Maps to: Experimentation**
-
-**Flag:** `recommendationAlgorithm` (string)  
-**Variants:** `popularity` (default) | `collaborative` | `personalized`  
-**Service:** `recommendation` (Python)  
-**Targeting:** `userTier=premium` → `personalized`; rest: 50/50 fractional
-
-### The story
-
-*"We added a feature flag to our recommendation service. We wrote zero
-telemetry code. Let's see what we get for free."*
-
-Then: *"Is the new model actually making money?"*
-
-### What it shows
-
-1. **The hook in Jaeger** — Open any recommendation trace. The `feature_flag.evaluation`
-   span event is there: `key`, `variant`, `reason`. Nobody wrote that.
-   One line: `api.add_hooks([TracingHook()])`.
-
-2. **Per-variant Grafana panels** — Impressions by variant (stacked), p95
-   latency by variant (`personalized` is visibly higher — the model is heavier).
-   Collector transform + spanmetrics connector + Prometheus. All YAML.
-
-3. **Average Order Value correlation** — The recommendation service logs `app.user.id` and
-   `app.recommendation.algorithm`. The checkout service logs `app.user.id`
-   and `app.order.amount`. OpenSearch PPL joins them on the session ID.
-   Premium users (`personalized`) buy larger baskets → ~5× higher AOV.
-   *"The checkout service has no idea the recommendation flag exists."*
-
-4. **Live rollout** — Flip `recommendationAlgorithm` defaultVariant to
-   `personalized` in flagd-ui. Dashboard shifts in ~30 seconds. No deploy.
-
-### Key slide moments
-
-- **"One line"** — show the `TracingHook` registration in `recommendation_server.py`
-- **"All YAML"** — show the 6-line collector transform in `otelcol-config.yml`
-- **"The checkout service doesn't know"** — show the PPL query in OpenSearch
-
-### OpenFeature concepts demonstrated
-
-- `EvaluationContext` with `userTier` (deterministically derived from session ID)
-- `TracingHook` — global hook, zero per-evaluation code
-- Fractional targeting with user-consistent assignment
+> **Stage order:** Demo 2 → Demo 3 → Demo 1. The numbers in the demo
+> headings reflect flag/service identity (and the order in which they
+> were implemented), **not** the on-stage order. On stage we open with
+> release safety (Demo 2), move through the AI angle (Demo 3), and close
+> with the business-impact AOV story (Demo 1). The sections below are
+> ordered to match the stage order.
 
 ---
 
 ## Demo 2 — Product Catalog Progressive Rollout ✅ Implemented
 
-**~3 min on stage · Maps to: Release safety**
+**Stage slot 1 (opener) · ~3 min on stage · Maps to: Release safety**
 
 **Flags:** `productCatalogCanary` (string, v1/v2) + `productCatalogV2Severity` (int, 0/15/40/75)  
 **Service:** `product-catalog` (Go)  
@@ -71,6 +29,10 @@ Then: *"Is the new model actually making money?"*
 
 *"Safe canary release — observable regression, instant rollback. We didn't
 touch a single monitoring configuration."*
+
+This is also where we establish the **"telemetry for free"** lesson for
+the rest of the talk: one line of hook registration is what put
+`feature_flag.evaluation` on every span.
 
 ### What it shows
 
@@ -113,14 +75,14 @@ v2 adds latency and errors scaled by `productCatalogV2Severity`:
 | `critical` (75) | +500ms | 75% |
 
 Dashboard uses `app.catalog.version` (set by the service) rather than
-`feature_flag.variant` (set by the hook) to avoid contamination from the
+`feature_flag.result.variant` (set by the hook) to avoid contamination from the
 severity flag evaluation on the same span.
 
 ---
 
 ## Demo 3 — Multi-model AI Summary 🔜 Separate PR
 
-**~3 min on stage · Maps to: both pillars (AI is the shared theme)**
+**Stage slot 2 (middle, optional) · ~3 min on stage · Maps to: cost/quality experimentation → incident response**
 
 **Flag:** `productSummaryModel` (string)  
 **Variants:** `off` (default) | `model-a` | `model-b`  
@@ -131,13 +93,13 @@ severity flag evaluation on the same span.
 ### The story
 
 *"Compare two AI models on latency and quality. Kill the bad one instantly.
-Same flag, same SemConv — the infrastructure built for Demo 1 powers this
-incident response too."*
+Same flag, same SemConv — the infrastructure we just used for canary
+rollout powers experimentation and incident response too."*
 
 ### What it will show
 
 1. Baseline on `model-a` — latency and cost metrics per variant in Grafana
-2. Flip to `model-b` — metrics shift, `model-b` spans carry `feature_flag.variant=model-b`
+2. Flip to `model-b` — metrics shift, `model-b` spans carry `feature_flag.result.variant=model-b`
 3. Enable `llmRateLimitError=on` — errors isolated to `model-b` cohort
 4. Kill switch — flip flag to `off`, errors stop immediately
 
@@ -150,10 +112,62 @@ incident response too."*
 
 ### Key slide moment
 
-This is the **closing beat**: show that the exact same SemConv attributes
-(`feature_flag.key`, `feature_flag.variant`) that power the A/B test
-dashboard in Demo 1 also power the incident kill switch here. One open
-standard, all use cases.
+This is the **bridge** between the release-safety opener (Demo 2) and the
+business-impact closer (Demo 1): show that the exact same SemConv
+attributes (`feature_flag.key`, `feature_flag.result.variant`) we just
+used for canary observation now power experimentation and the incident
+kill switch. One open standard, all use cases.
+
+---
+
+## Demo 1 — Recommendation Algorithm A/B Test ✅ Implemented
+
+**Stage slot 3 (climax) · ~4 min on stage · Maps to: Experimentation / tracking — the business-impact closer**
+
+**Flag:** `recommendationAlgorithm` (string)  
+**Variants:** `popularity` (default) | `collaborative` | `personalized`  
+**Service:** `recommendation` (Python)  
+**Targeting:** `userTier=premium` → `personalized`; rest: 50/50 fractional
+
+### The story
+
+*"We've seen the same hook power release safety and AI incident response.
+Now: is the new recommendation model actually making money?"*
+
+Closing line of the whole talk: *"Personalized recommendations drive 5×
+larger baskets. The checkout service has no idea the flag exists. One
+open standard. All use cases."*
+
+### What it shows
+
+1. **The hook in Jaeger** — Open any recommendation trace. The `feature_flag.evaluation`
+   span event is there: `key`, `variant`, `reason`. Already familiar from
+   the earlier demos. One line: `api.add_hooks([TracingHook()])`.
+
+2. **Per-variant Grafana panels** — Impressions by variant (stacked), p95
+   latency by variant (`personalized` is visibly higher — the model is heavier).
+   Collector transform + spanmetrics connector + Prometheus. All YAML.
+
+3. **Average Order Value correlation** — The recommendation service logs `app.user.id` and
+   `app.recommendation.algorithm`. The checkout service logs `app.user.id`
+   and `app.order.amount`. OpenSearch PPL joins them on the session ID.
+   Premium users (`personalized`) buy larger baskets → ~5× higher AOV.
+   *"The checkout service has no idea the recommendation flag exists."*
+
+4. **Live rollout** — Flip `recommendationAlgorithm` defaultVariant to
+   `personalized` in flagd-ui. Dashboard shifts in ~30 seconds. No deploy.
+
+### Key slide moments
+
+- **"One line"** — show the `TracingHook` registration in `recommendation_server.py`
+- **"All YAML"** — show the 6-line collector transform in `otelcol-config.yml`
+- **"The checkout service doesn't know"** — show the PPL query in OpenSearch
+
+### OpenFeature concepts demonstrated
+
+- `EvaluationContext` with `userTier` (deterministically derived from session ID)
+- `TracingHook` — global hook, zero per-evaluation code
+- Fractional targeting with user-consistent assignment
 
 ---
 
@@ -172,9 +186,9 @@ openfeature.AddHooks(otelhooks.NewTracesHook())
 After that, every flag evaluation automatically attaches to the active span:
 
 ```
-feature_flag.key       = "recommendationAlgorithm"
-feature_flag.variant   = "personalized"
-feature_flag.provider_name = "flagd"
+feature_flag.key            = "recommendationAlgorithm"
+feature_flag.result.variant = "personalized"
+feature_flag.provider_name  = "flagd"
 ```
 
 The collector's `transform/sanitize_spans` processor promotes these from
@@ -188,17 +202,9 @@ concrete in a live system.
 
 ## Slide suggestions per demo
 
-### Demo 1 slides
+Listed in **stage order** (slot 1 → slot 2 → slot 3).
 
-| Slide | Content |
-|---|---|
-| "The contract" | Show the one-line hook registration |
-| "What you get" | Screenshot of Jaeger span event with `feature_flag.*` attributes |
-| "No code" | Show the 6-line collector YAML transform |
-| "Is it making money?" | Show the Grafana AOV table — personalized 5× higher |
-| "The answer" | Quote: *"Personalized recommendations drive larger baskets — and the only telemetry code we wrote was one line."* |
-
-### Demo 2 slides
+### Stage slot 1 — Demo 2 slides (Canary rollout, opener)
 
 | Slide | Content |
 |---|---|
@@ -208,11 +214,23 @@ concrete in a live system.
 | "The rollback" | Screenshot: panels recovering within 30 seconds |
 | "The punchline" | *"No deploy. No restart. The flag key was already on every span."* |
 
-### Demo 3 slides (once implemented)
+### Stage slot 2 — Demo 3 slides (Multi-model AI, optional middle)
+
+> Once implemented.
 
 | Slide | Content |
 |---|---|
 | "Multi-model" | Two models, same hook, same SemConv |
-| "Datadog angle" | Cost vs quality tradeoffs visible per variant |
-| "Dynatrace angle" | Kill switch — incident response without redeploy |
-| "Convergence" | Both acquisitions solved with one open standard |
+| "Cost vs quality" | Latency and token cost visible per variant |
+| "Kill switch" | Incident response without redeploy |
+| "Same substrate" | One hook just powered release safety; now it powers experimentation and incident response |
+
+### Stage slot 3 — Demo 1 slides (Recommendation A/B + AOV, climax)
+
+| Slide | Content |
+|---|---|
+| "The contract" | Show the one-line hook registration |
+| "What you get" | Screenshot of Jaeger span event with `feature_flag.*` attributes |
+| "No code" | Show the 6-line collector YAML transform |
+| "Is it making money?" | Show the Grafana AOV table — personalized 5× higher |
+| "The answer" | Quote: *"Personalized recommendations drive larger baskets — and the only telemetry code we wrote was one line."* |
