@@ -1,5 +1,7 @@
 # Talk Foundation
 
+Length: 45min slot, including live demo, Q&A
+
 ## Abstract
 
 > Observability and feature flagging are converging, reshaping how
@@ -19,6 +21,19 @@
 >
 > Join us to discover why observability companies invest in feature
 > flagging — and how you can benefit.
+
+## References
+
+Use these references as foundational research for the talk. When in doubt, websearch for more information or ask.
+
+- [Dynatrace acquires DevCycle](https://www.dynatrace.com/news/blog/dynatrace-acquires-devcycle-to-strengthen-feature-delivery/)
+- [Datadog acquires Eppo](https://www.datadoghq.com/about/latest-news/press-releases/datadog-acquires-eppo-to-expand-its-ai/)
+- [OpenFeature and OpenTelemetry SemConv (1)](https://openfeature.dev/blog/feature-observability-semantic-conventions/)
+- [OpenFeature and OpenTelemetry SemConv (2)](https://opentelemetry.io/docs/specs/semconv/feature-flags/feature-flags-events/)
+- [OpenFeature documentation](https://openfeature.dev/docs/reference/intro)
+- [OpenTelemetry documentation](https://opentelemetry.io/docs/)
+
+
 
 ## Agenda (current draft)
 

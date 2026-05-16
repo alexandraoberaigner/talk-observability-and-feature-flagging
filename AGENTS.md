@@ -27,3 +27,12 @@ Slidev presentation will be added at the project root (typically `slides.md` + S
 
 - Keep docs concise; use markdown links to external sources rather than duplicating content.
 - When referencing demo implementation details, point to `docs/demo-spec.md` or the companion demo repo.
+
+## Slides Guidelines
+
+- Use Slidev for slides. there is a skill definition in `.agents/skills/slidev/SKILL.md` with more details.
+- Don't make up facts. Webseach information or ask. Add references to the slide as footnote.
+- Zero fluff. Focus on the unique narrative hook of the talk and the value it provides to the audience.
+- Websearch openfeature.dev for OpenFeature-specific information, and opentelemetry.io for OpenTelemetry-specific information.
+- Don't mention the acquisitions without framing them in the narrative hook. The talk is not about the acquisitions, but about the convergence they represent — and how OpenFeature + OpenTelemetry are the only vendor-neutral way to navigate that convergence.
+- Include live code examples, diagrams, and animations where relevant.
