@@ -248,7 +248,7 @@ The vendor-neutral standard for telemetry: traces, metrics, logs.
 
 <div class="mt-8 text-xl">
 
-What matters for this talk: the <span class="text-accent">feature flag semantic conventions</span>.
+What matters for this talk: the <span class="text-accent">feature flag evaluation event</span>.
 
 </div>
 
@@ -262,7 +262,7 @@ feature_flag.provider.name:  flagd
 
 <div class="mt-6">
 
-Three attributes. Plus standardised event names and metric counters. (TODO)
+SemConv standardizes the attribute names. That is what makes these attributes queryable the same way across any OTel-compatible backend.
 
 </div>
 
@@ -287,18 +287,18 @@ openfeature.AddHooks(otelhooks.NewTracesHook())
 
 <div class="mt-8">
 
-After this runs at startup, <span class="text-accent">every flag evaluation</span> attaches `feature_flag.*` attributes to the active span.
+After this runs at startup, <span class="text-accent">every flag evaluation</span> emits a `feature_flag.evaluation` span event on the active span.
 
 </div>
 
 <div class="mt-4 text-muted">
 
-No per-call code. No bespoke instrumentation. Standards-defined attributes on every span, for free.
+No per-call code. No bespoke instrumentation per flag. One line at startup.
 
 </div>
 
 <!--
-This is the single most important slide in the deck. Three lines of code. The hook intercepts every flag evaluation and writes the SemConv attributes onto the span that is currently active. Everything you are about to see on stage is downstream of these three lines.
+This is the single most important slide in the deck. Three lines of code. The hook intercepts every flag evaluation and emits a feature_flag.evaluation span event on the currently active span. SemConv defines the attribute names on that event. Everything you are about to see on stage is downstream of these three lines.
 -->
 
 ---
@@ -323,7 +323,7 @@ The <span class="text-accent">OpenTelemetry community demo</span>. A small e-com
 
 - Already uses OpenFeature with the flagd provider
 - Already ships `TracingHook` in Go and Python services
-- SemConv attributes flow onto spans automatically
+- Flag evaluation events flow onto spans automatically
 
 </div>
 
@@ -479,14 +479,14 @@ Flag category: <span class="text-green">release toggle</span>. Short-lived, perc
 
 <div class="mt-6 text-muted">
 
-The `feature_flag.key` is already on every span. No deploy. No restart.
+Rollback: one flag flip. No deploy. No restart.
 
 </div>
 
 <!--
 Stage slot 1. About 3 minutes on the screen. Two flags compose: one controls who gets v2, the other controls how broken v2 is. The dashboard reads app.catalog.version so the severity flag does not contaminate the rollout cohort.
 
-Closing line for this demo: "No deploy. No restart. The flag key was already on every span. That is the SemConv payoff. Remember the hook. The next two demos use the exact same one."
+Closing line for this demo: "Rollback was one flag flip. No deploy. No restart. Remember the hook — the next two demos use the exact same one."
 -->
 
 ---
@@ -513,7 +513,7 @@ Flag category: <span class="text-green">ops toggle</span>. Cost and quality comp
 
 <div class="mt-6 text-muted">
 
-Same hook. Same SemConv attributes. Now powering experimentation and incident response.
+Same hook. Same OTel span events. Now covering experimentation and incident response.
 
 </div>
 
@@ -572,91 +572,76 @@ Safe releases, AI risk, experimentation.
 
 ---
 
-# Two stories, one foundation (TODO)
+# The layer both vendors depend on is open.
 
-<div class="text-sm">
+Dynatrace acquired DevCycle &rarr; release safety, progressive delivery
 
-| | Dynatrace and DevCycle | Datadog and Eppo |
-|---|---|---|
-| **Centre of gravity** | Release safety, progressive delivery | Experimentation, product analytics |
-| **Headline use case** | Risk reduction, kill switches | Compare AI models, engagement vs cost |
+Datadog acquired Eppo &rarr; experimentation, product analytics
 
-</div>
+<div class="mt-6 text-lg">
 
-<div class="mt-8">
-
-Different framings of the same convergence. Both rely on a layer underneath that you can use directly:
+Different angles. Same bet: **flag evaluations need to be observable.**
 
 </div>
 
-<div class="mt-4 grid grid-cols-2 gap-6">
+<div class="mt-6 grid grid-cols-2 gap-6">
 
 <div>
 
 ### <span class="text-green">OpenFeature</span>
-The control plane. Your code, your evaluation context, your hooks.
+The vendor-neutral API for flag evaluation. Swap providers without touching application code.
 
 </div>
 
 <div>
 
-### <span class="text-green">OpenTelemetry SemConv</span>
-The correlation layer. Flag attributes on every signal, every backend.
+### <span class="text-green">OpenTelemetry</span>
+The enabler. Hooks emit flag evaluations as span events. SemConv standardizes the attribute names so every backend can query them consistently.
 
 </div>
 
 </div>
 
 <!--
-The two vendors emphasize different facets of the same convergence. Dynatrace led with release safety. Datadog led with experimentation. We use them as the hook, not the message. The message is that the layer underneath belongs to you. Your application talks to OpenFeature, not a vendor SDK. Your telemetry follows the OpenTelemetry feature-flag semantic conventions, regardless of which backend you send signals to. That layer is open source. That layer is yours.
--->
-
----
-layout: statement
----
-
-# OpenFeature + OpenTelemetry SemConv<br/>is yours, on any stack you already run.
-
-<!--
-The talk's thesis in one line. The convergence is real. The vendor stories are real. The value layer underneath them is open, vendor-neutral, and adoptable today. Pick any backend, swap any backend, run your own. The hook, the attributes, the correlation, all of it keeps working.
+The two acquisitions tell the same story from different angles. Dynatrace led with release safety. Datadog led with experimentation. Both converge on the same need: correlating flag evaluations with telemetry. OpenFeature gives you vendor-neutral flag evaluation — swap providers without touching application code. OpenTelemetry is the key enabler: hooks emit flag evaluations as span events, the collector routes them, backends query them. SemConv just standardizes the attribute names so that correlation works consistently across every backend. The layer is open. The layer works today.
 -->
 
 ---
 
-# Takeaways (TODO)
+# Takeaways
 
 <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-6 mt-8">
 
 <div class="text-accent font-bold text-2xl" v-click>1</div>
-<div v-after>One hook turns every flag evaluation into first-class telemetry.</div>
+<div v-after>One hook emits a span event on every flag evaluation. No manual instrumentation per flag.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>2</div>
-<div v-after>SemConv lets you pivot traces, metrics, and logs on flag key or variant. No bespoke integration per backend.</div>
+<div v-after>SemConv standardizes the attribute names — any OTel-compatible backend can query flag key and variant without a bespoke integration.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>3</div>
-<div v-after><span class="text-green">OpenFeature</span> and <span class="text-green">OpenTelemetry</span> are open standards. Pick any vendor, swap any vendor, run your own stack. The code above stays the same.</div>
+<div v-after><span class="text-green">OpenFeature</span> and <span class="text-green">OpenTelemetry</span> are open standards. Swap providers, swap backends — the instrumentation does not change.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>4</div>
-<div v-after>Adoptable today. One line on a service you already run.</div>
+<div v-after>Release safety, incident response, experimentation. One setup covers all of them.</div>
 
 </div>
 
 ---
 
-# Get started (TODO)
+# Get started
 
 <div class="grid grid-cols-3 gap-4 mt-6">
   <div class="card text-center">
     <h3>Learn</h3>
-    <p>openfeature.dev<br/>opentelemetry.io/docs/specs/semconv/feature-flags</p>
+    <p><a href="https://openfeature.dev">openfeature.dev</a><br/><a href="https://opentelemetry.io/docs/specs/semconv/feature-flags">OTel SemConv — feature flags</a></p>
   </div>
   <div class="card text-center">
     <h3>Try</h3>
-    <p>Run the <a href="https://github.com/open-telemetry/opentelemetry-demo">OTel community demo</a>. Flags already wired.</p>
+    <p><a href="https://github.com/open-telemetry/opentelemetry-demo">OTel community demo</a> — flags already wired.</p>
   </div>
   <div class="card text-center">
     <h3>Connect</h3>
-    <p><code>#openfeature</code> on CNCF Slack</p>
+    <p><a href="https://cloud-native.slack.com/archives/C0344AANLA1">#openfeature</a> on CNCF Slack</p>
   </div>
 </div>
 
