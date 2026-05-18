@@ -498,7 +498,7 @@ Rollback: one flag flip. No deploy. No restart.
 <!--
 Stage slot 1. About 3 minutes on the screen. Two flags compose: one controls who gets v2, the other controls how broken v2 is. The dashboard reads app.catalog.version so the severity flag does not contaminate the rollout cohort.
 
-Run before this demo: make demo1
+Run before this demo: make demo1   (stop after: make loadgen-stop)
 This starts k6 demo1 load automatically and walks through flag escalation step by step.
 Press Enter to advance each step — the script handles all flag changes.
 
@@ -580,7 +580,7 @@ Flag categories: <span class="text-green">experiment</span> plus <span class="te
 <!--
 Stage slot 3. About 4 minutes. Premium users get personalized via EvaluationContext. The rest get popularity. Walk in order: span event in Jaeger, per-variant metrics in Grafana, the Track call in checkout, AOV in OpenSearch, live flip.
 
-Run before this demo: make demo3
+Run before this demo: make demo3   (stop after: make loadgen-stop)
 This starts k6 demo3 load automatically and handles the flag flip interactively.
 Press Enter to advance each step.
 
