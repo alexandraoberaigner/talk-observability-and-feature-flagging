@@ -498,6 +498,17 @@ Rollback: one flag flip. No deploy. No restart.
 <!--
 Stage slot 1. About 3 minutes on the screen. Two flags compose: one controls who gets v2, the other controls how broken v2 is. The dashboard reads app.catalog.version so the severity flag does not contaminate the rollout cohort.
 
+Run before this demo: make demo1
+This starts k6 demo1 load automatically and walks through flag escalation step by step.
+Press Enter to advance each step — the script handles all flag changes.
+
+  step 0  baseline     0% v2, severity=none
+  step 1  canary       5% v2, severity=none
+  step 2  escalate    25% v2, severity=low  (15% errors)
+  step 3  escalate    50% v2, severity=high (40% errors)
+  step 4  critical    75% v2, severity=critical (75% errors)
+  rollback             0% v2, severity=none
+
 To find error traces in Jaeger, use the Tags field:
   feature_flag.key=productCatalogCanary feature_flag.result.variant=v2
 Both tags in one search — space-separated. Every v2 span carries both because the TracingHook attaches them automatically.
@@ -535,6 +546,11 @@ Same hook. Same OTel span events. Now covering experimentation and incident resp
 
 <!--
 Stage slot 2. About 3 minutes. This is the bridge demo. The point is not the AI. The point is that the exact same attributes we just used for canary observation now drive a completely different concern: comparing model cost and quality, then killing the bad one. One open standard, all use cases.
+
+Flag changes for this demo — use flagd-ui (http://localhost:8080/feature/) or make reset first:
+  productSummaryModel: model-a → model-b (show degraded model: +300-800ms, ~10% errors)
+  productSummaryModel: model-b → off    (kill switch — 503s)
+  productSummaryModel: off    → model-a (recover)
 -->
 
 ---
@@ -562,7 +578,16 @@ Flag categories: <span class="text-green">experiment</span> plus <span class="te
 - Live flip. Dashboard shifts in ~30s
 
 <!--
-Stage slot 3. About 4 minutes. Premium users get personalized via EvaluationContext. The rest are split 50/50 by fractional targeting. Walk in order: span event in Jaeger, per-variant metrics in Grafana, the Track call in checkout, AOV in OpenSearch, live flip.
+Stage slot 3. About 4 minutes. Premium users get personalized via EvaluationContext. The rest get popularity. Walk in order: span event in Jaeger, per-variant metrics in Grafana, the Track call in checkout, AOV in OpenSearch, live flip.
+
+Run before this demo: make demo3
+This starts k6 demo3 load automatically and handles the flag flip interactively.
+Press Enter to advance each step.
+
+  step 0  baseline  recommendationAlgorithm=popularity
+  step 1  flip      recommendationAlgorithm=personalized
+  step 2  AOV beat  (narration — no flag change, just show the table)
+  opt.    rollback  recommendationAlgorithm=popularity
 -->
 
 ---
