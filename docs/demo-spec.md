@@ -134,9 +134,7 @@ kill switch. One open standard, all use cases.
 *"We've seen the same hook power release safety and AI incident response.
 Now: is the new recommendation model actually making money?"*
 
-Closing line of the whole talk: *"Personalized recommendations drive 5×
-larger baskets. The checkout service has no idea the flag exists. One
-open standard. All use cases."*
+Closing line of the whole talk: *"Personalized drives larger baskets. The checkout service has no idea the flag exists. One open standard. All use cases."*
 
 ### What it shows
 
@@ -149,25 +147,71 @@ open standard. All use cases."*
    Collector transform + spanmetrics connector + Prometheus. All YAML.
 
 3. **Average Order Value correlation** — The recommendation service logs `app.user.id` and
-   `app.recommendation.algorithm`. The checkout service logs `app.user.id`
-   and `app.order.amount`. OpenSearch PPL joins them on the session ID.
-   Premium users (`personalized`) buy larger baskets → ~5× higher AOV.
+   `app.recommendation.algorithm` as a `"recommendation served"` OTel log record.
+   The checkout service emits a `"checkout.completed"` OTel log record via the
+   OpenFeature Tracking API (see step 4 below). OpenSearch PPL joins both on
+   `app.user.id` (session ID). Premium users (`personalized`) buy larger
+   baskets → measurably higher AOV.
    *"The checkout service has no idea the recommendation flag exists."*
 
-4. **Live rollout** — Flip `recommendationAlgorithm` defaultVariant to
+4. **Tracking API — closing the loop** — `client.Track("checkout.completed", ...)` is called
+   in the checkout service after every successful order. The checkout service passes only
+   the session ID and order amount — no flag knowledge. The multi-provider fans the call to
+   `otelTrackingProvider`, which emits it as a structured OTel log record (with trace context)
+   via `slog.InfoContext`. The PPL query joins this log with `"recommendation served"` logs on
+   `app.user.id`. That join is the business insight: which algorithm drives larger baskets?
+
+5. **Live rollout** — Flip `recommendationAlgorithm` defaultVariant to
    `personalized` in flagd-ui. Dashboard shifts in ~30 seconds. No deploy.
+
+### Implementation: multi-provider + otelTrackingProvider
+
+The checkout service registers a **multi-provider** (built into the OpenFeature Go SDK,
+`openfeature/multi` subpackage — no new dependency):
+
+```go
+ofProvider, _ := multi.NewProvider(
+    multi.StrategyFirstMatch,
+    multi.WithProvider("flagd", flagdProvider),
+    multi.WithProvider("otel-tracking", &otelTrackingProvider{}),
+)
+openfeature.SetProvider(ofProvider)
+```
+
+`otelTrackingProvider` embeds `openfeature.NoopProvider` (satisfies `FeatureProvider`
+with zero-value stubs) and overrides only `Track`:
+
+```go
+func (p *otelTrackingProvider) Track(ctx context.Context, eventName string,
+    evalCtx openfeature.EvaluationContext, details openfeature.TrackingEventDetails) {
+    slog.InfoContext(ctx, eventName,
+        slog.String("app.user.id", evalCtx.TargetingKey()),
+        slog.Float64("app.order.amount", details.Value()),
+    )
+}
+```
+
+Because the logger is wired to an OTLP exporter via `otelslog`, the log record carries
+`traceId` and `spanId` from the active checkout span automatically.
+
+The multi-provider fans `Track()` to all ready sub-providers that implement `Tracker`.
+Flag evaluations (`BooleanValue`, `StringValue`, etc.) resolve exclusively from `flagd` via
+`StrategyFirstMatch` — `otelTrackingProvider` returns `FLAG_NOT_FOUND` for all of them.
 
 ### Key slide moments
 
 - **"One line"** — show the `TracingHook` registration in `recommendation_server.py`
 - **"All YAML"** — show the 6-line collector transform in `otelcol-config.yml`
-- **"The checkout service doesn't know"** — show the PPL query in OpenSearch
+- **"The checkout service doesn't know"** — show `client.Track(...)` and the PPL query side by side:
+  the call carries only user ID and order amount, no flag key
 
 ### OpenFeature concepts demonstrated
 
 - `EvaluationContext` with `userTier` (deterministically derived from session ID)
 - `TracingHook` — global hook, zero per-evaluation code
 - Fractional targeting with user-consistent assignment
+- `Tracking API` — `client.Track()` records business outcomes, decoupled from flag evaluation
+- `Multi-Provider` — fans tracking events to analytics backends without touching evaluation logic
 
 ---
 
@@ -232,5 +276,5 @@ Listed in **stage order** (slot 1 → slot 2 → slot 3).
 | "The contract" | Show the one-line hook registration |
 | "What you get" | Screenshot of Jaeger span event with `feature_flag.*` attributes |
 | "No code" | Show the 6-line collector YAML transform |
-| "Is it making money?" | Show the Grafana AOV table — personalized 5× higher |
+| "Is it making money?" | Show the Grafana AOV table — personalized significantly higher |
 | "The answer" | Quote: *"Personalized recommendations drive larger baskets — and the only telemetry code we wrote was one line."* |

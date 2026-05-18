@@ -261,20 +261,20 @@ What matters for this talk: the <span class="text-accent">feature flag evaluatio
 feature_flag.evaluation
 
 # required
-feature_flag.key:            new-checkout-flow
+feature_flag.key:            recommendationAlgorithm
 
-# one of: variant (named) or value (raw)
-feature_flag.result.variant: treatment
+# named variant — or feature_flag.result.value for raw payloads
+feature_flag.result.variant: personalized
 
 # recommended
-feature_flag.provider.name:  <your-flag-system>
+feature_flag.provider.name:  flagd
 feature_flag.result.reason:  TARGETING_MATCH
 ```
 
 <div class="text-xs text-muted mt-3">opentelemetry.io/docs/specs/semconv/feature-flags · status: development</div>
 
 <!--
-One event name plus a small set of attributes. The flag key is required. The result is recorded as variant for flags with named variants, or value for raw payloads. The provider name and reason code are recommended and almost always populated.
+One event name plus a small set of attributes. The flag key is required. The result variant is the named variant — in our demo, "personalized" for premium users. The provider name and reason code are recommended and almost always populated.
 
 Other attributes in the spec worth knowing: feature_flag.context.id, feature_flag.set.id, feature_flag.version, error.type for failed evaluations.
 
@@ -486,6 +486,7 @@ Flag category: <span class="text-green">release toggle</span>. Short-lived, perc
 - Baseline. 5% v2, no errors
 - Step rollout. Yellow latency rises
 - Add severity. Red errors appear
+- Jaeger: `feature_flag.key=productCatalogCanary feature_flag.result.variant=v2`
 - Roll back. Panels recover in ~30s
 
 <div class="mt-6 text-muted">
@@ -496,6 +497,10 @@ Rollback: one flag flip. No deploy. No restart.
 
 <!--
 Stage slot 1. About 3 minutes on the screen. Two flags compose: one controls who gets v2, the other controls how broken v2 is. The dashboard reads app.catalog.version so the severity flag does not contaminate the rollout cohort.
+
+To find error traces in Jaeger, use the Tags field:
+  feature_flag.key=productCatalogCanary feature_flag.result.variant=v2
+Both tags in one search — space-separated. Every v2 span carries both because the TracingHook attaches them automatically.
 
 Closing line for this demo: "Rollback was one flag flip. No deploy. No restart. Remember the hook — the next two demos use the exact same one."
 -->
@@ -552,25 +557,97 @@ Flag categories: <span class="text-green">experiment</span> plus <span class="te
 
 - Hook in Jaeger. The span event
 - Per-variant Grafana. Impressions, p95
-- AOV by variant. OpenSearch PPL
+- `client.Track("checkout.completed", ...)`. The log record
+- AOV by variant. OpenSearch PPL joins on session ID
 - Live flip. Dashboard shifts in ~30s
 
 <!--
-Stage slot 3. About 4 minutes. Premium users get personalized via EvaluationContext. The rest are split 50/50 by fractional targeting. We will walk through four panels in order: the span event in Jaeger, per-variant metrics in Grafana, the AOV correlation in OpenSearch, then a live flag flip to watch the dashboard catch up.
+Stage slot 3. About 4 minutes. Premium users get personalized via EvaluationContext. The rest are split 50/50 by fractional targeting. Walk in order: span event in Jaeger, per-variant metrics in Grafana, the Track call in checkout, AOV in OpenSearch, live flip.
 -->
 
 ---
-layout: statement
+layout: two-cols
 ---
 
-# Personalized drives 5x larger baskets.<br/>The checkout service has no idea the flag exists.
+# Closing the loop
+
+```go {2-11|13-18|all}
+// otelTrackingProvider
+func (p *otelTrackingProvider) Track(
+    ctx context.Context, eventName string,
+    evalCtx openfeature.EvaluationContext,
+    details openfeature.TrackingEventDetails,
+) {
+    slog.InfoContext(ctx, eventName,
+        slog.String("app.user.id", evalCtx.TargetingKey()),
+        slog.Float64("app.order.amount", details.Value()),
+    )
+}
+
+// PlaceOrder — no flag knowledge
+openfeature.NewClient("checkout").Track(ctx,
+    "checkout.completed",
+    openfeature.NewEvaluationContext(userID, nil),
+    openfeature.NewTrackingEventDetails(orderTotal),
+)
+```
+
+::right::
+
+<div class="pl-6 mt-10">
+
+```sql {1-2|3-11|12-15|all}
+SOURCE otel-logs-*
+| WHERE body = 'checkout.completed'
+| EVAL user_id    = attributes.app.user.id,
+       order_amount = attributes.app.order.amount
+| JOIN ON user_id [
+    SOURCE otel-logs-*
+    | WHERE body = 'recommendation served'
+    | DEDUP attributes.app.user.id
+    | RENAME attributes.app.user.id        AS user_id,
+             attributes.app.recommendation.algorithm AS algorithm
+  ]
+| STATS avg(order_amount) AS aov,
+        count()            AS checkouts
+  BY algorithm
+| SORT - aov
+```
+
+<div class="mt-4 text-muted text-sm">
+
+Two log streams. One join key: `app.user.id`.<br/>
+Neither service knows about the other.
+
+</div>
+
+</div>
+
+<!--
+Left: the Tracking API call and otelTrackingProvider. Right: the PPL query that makes sense of it.
+
+Walk through the query in steps:
+1. Start with "checkout.completed" logs — the tracking events from the checkout service.
+2. Join with "recommendation served" logs on user_id — those come from the recommendation service, which logged which algorithm it used.
+3. Aggregate: average order value and checkout count per algorithm variant.
+
+The checkout service has no idea the recommendation flag exists. It just tracked the outcome. The join happens in the query layer, not in the application code. That is what decoupled means in practice.
+
+Speaker note on the code side: otelTrackingProvider.Track emits the log record. The multi-provider fans the Track() call from the OpenFeature client to this provider. Flag evaluation still goes to flagd — StrategyFirstMatch skips otelTrackingProvider for all flag evaluations since it returns FLAG_NOT_FOUND.
+-->
+
+---
+layout: section
+---
+
+# Personalized drives larger baskets.<br/>The checkout service has no idea the flag exists.
 
 <div class="mt-12 text-xl text-muted">
 One open standard. All use cases.
 </div>
 
 <!--
-Closing beat of the demo arc. The recommendation service logs the user id and the variant. The checkout service logs the user id and the order amount. A PPL query in OpenSearch joins them. That correlation works because both services emit standard OpenTelemetry signals, and the recommendation service emits the standard feature-flag attributes. No bespoke integration. No coupling between services. That is what vendor-neutral means in practice.
+Closing beat. The recommendation service logs which variant it served. The checkout service tracks the outcome via the OpenFeature Tracking API — no flag knowledge. The PPL query in OpenSearch joins them on session ID. No bespoke integration. No coupling between services. That is what vendor-neutral means in practice.
 -->
 
 ---
