@@ -34,7 +34,7 @@ Both maintainers of OpenFeature. The talk is not an advertisement for either com
 layout: section
 ---
 
-# Two acquisitions <br /> in twelve months.
+# Two acquisitions <br /> in eight months.
 
 <!--
 We open here because it is the clearest external signal that observability and feature flagging are converging. This talk is not about the acquisitions and not about either company. Everything after this slide is about the open-source layer that any practitioner can use, regardless of which observability backend they happen to run.
@@ -42,46 +42,53 @@ We open here because it is the clearest external signal that observability and f
 
 ---
 
-# The headlines
 
-<div class="grid grid-cols-2 gap-6 mt-6">
 
+<div class="grid grid-cols-2 grid-rows-2 gap-x-4 gap-y-0 mt-4">
+
+<div class="col-start-1 row-start-1">
 <div class="border border-gray-600 rounded-lg overflow-hidden text-sm shadow-lg">
-  <div class="bg-gray-800 px-3 py-1 text-xs text-gray-400 flex items-center gap-2">
-    <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
-    <span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
-    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
-    <span class="ml-2 truncate">dynatrace.com/news</span>
+    <div class="bg-gray-800 px-3 py-1 text-xs text-gray-400 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
+      <span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
+      <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+      <span class="ml-2 truncate">datadoghq.com/about/latest-news</span>
+    </div>
+    <div class="p-4 bg-gray-900">
+      <div class="text-xs text-gray-500 mb-2">DATADOG · MAY 2025</div>
+      <div class="font-bold text-white leading-snug mb-2">Datadog acquires Eppo to expand AI, product analytics, experimentation and feature flag capabilities</div>
+      <div class="text-gray-400 text-xs leading-relaxed">"Compare multiple models side-by-side. Determine user engagement against cost tradeoffs."</div>
+    </div>
   </div>
-  <div class="p-4 bg-gray-900">
-    <div class="text-xs text-gray-500 mb-2">DYNATRACE · JANUARY 2026</div>
-    <div class="font-bold text-white leading-snug mb-2">Dynatrace acquires DevCycle to strengthen feature delivery</div>
-    <div class="text-gray-400 text-xs leading-relaxed">"Unifying runtime control with real-time, AI-powered intelligence so teams can close the loop between change and outcome."</div>
-  </div>
+  <div class="text-xs text-muted mt-2 wrap">https://www.datadoghq.com/about/latest-news/press-releases/datadog-acquires-eppo-to-expand-its-ai/</div>
+ 
 </div>
 
-<div class="border border-gray-600 rounded-lg overflow-hidden text-sm shadow-lg">
-  <div class="bg-gray-800 px-3 py-1 text-xs text-gray-400 flex items-center gap-2">
-    <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
-    <span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
-    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
-    <span class="ml-2 truncate">datadoghq.com/about</span>
+<div class="col-start-2 row-start-2">
+   <div class="border border-gray-600 rounded-lg overflow-hidden text-sm shadow-lg">
+    <div class="bg-gray-800 px-3 py-1 text-xs text-gray-400 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
+      <span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
+      <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+      <span class="ml-2 truncate">dynatrace.com/news</span>
+    </div>
+    <div class="p-4 bg-gray-900">
+      <div class="text-xs text-gray-500 mb-2">DYNATRACE · JANUARY 2026</div>
+      <div class="font-bold text-white leading-snug mb-2">Dynatrace acquires DevCycle to strengthen feature delivery</div>
+      <div class="text-gray-400 text-xs leading-relaxed">"This acquisition further advances observability into an active system of control."</div>
+    </div>
   </div>
-  <div class="p-4 bg-gray-900">
-    <div class="text-xs text-gray-500 mb-2">DATADOG · MAY 2025</div>
-    <div class="font-bold text-white leading-snug mb-2">Datadog acquires Eppo to expand AI, product analytics, experimentation and feature flag capabilities</div>
-    <div class="text-gray-400 text-xs leading-relaxed">"Compare multiple models side-by-side. Determine user engagement against cost tradeoffs."</div>
-  </div>
+  <div class="text-xs text-muted mt-2 truncate">dynatrace.com/news/blog/dynatrace-acquires-devcycle</div>
 </div>
 
-</div>
-
-<div class="text-xs text-muted mt-6">
-  Sources: dynatrace.com/news/blog/dynatrace-acquires-devcycle · datadoghq.com/about/latest-news/press-releases/datadog-acquires-eppo
 </div>
 
 <!--
-Dynatrace bought DevCycle in January 2026. Datadog bought Eppo in May 2025. Two of the biggest observability vendors made significant investments in feature flagging within twelve months of each other. We use this as evidence that the convergence is real, then move past it. The talk is about what the open-source layer underneath gives you regardless of vendor.
+Dynatrace bought DevCycle in January 2026. Datadog bought Eppo in May 2025. Two of the biggest observability vendors made significant investments in feature flagging within eight months of each other. We use this as evidence that the convergence is real, then move past it. The talk is about what the open-source layer underneath gives you regardless of vendor.
+
+Two more direct quotes from the Dynatrace post worth knowing in case the audience asks:
+- "Teams gain a single, contextual view of intent, execution, and outcome across the software development lifecycle." — frames the convergence in their own words.
+- "An AI assistant can query the Dynatrace MCP Server to understand blast radius and KPI impact, then safely reduce exposure or disable a feature without redeploying code." — their forward-looking, AI-driven framing.
 -->
 
 ---
@@ -104,13 +111,16 @@ This is the talk's question. The audience leaves with an answer that is not vend
 <div>What is feature flagging</div>
 
 <div class="text-accent font-bold">02</div>
-<div>OpenFeature and OpenTelemetry, briefly</div>
+<div>OpenFeature and OpenTelemetry</div>
 
 <div class="text-accent font-bold">03</div>
-<div>Three live demos on the OpenTelemetry community demo</div>
+<div>Use case demos on the OpenTelemetry demo</div>
 
 <div class="text-accent font-bold">04</div>
 <div>What the open standards give you, on any stack you already run</div>
+
+<div class="text-accent font-bold">05</div>
+<div>Q&A</div>
 
 </div>
 
@@ -152,46 +162,40 @@ That single sentence is the whole concept. Deploy is a build-and-restart event. 
 
 ---
 
-# What you get, and where it hurts
+# Feature flag lifecycle
 
-<div class="grid grid-cols-2 gap-8 mt-6">
+<div class="flex justify-center items-center mt-6">
 
-<div>
+```mermaid {scale: 0.7}
+flowchart LR
+  create["📝 Create"] --> deploy["⚫️ Deploy"]
+  deploy --> activate["⚪️ Activate"]
+  activate --> observe["⚙️ Observation"]
+    observe --> cleanup["🧹 Clean-up"]
+  cleanup --> archive["🗄️ Archive"]
+  observe -.-> |deactivate & fix issue|deploy
+```
 
-### <span class="text-green">What you get</span>
+</div>
 
-<v-clicks>
+<!--
+  linkStyle 5 stroke:#00c800,stroke-width:2px
+A flag is not a single switch flipped once. It is a phase of work.
 
+What you get along this path:
 - Ship dark, release when ready
 - Roll out by percentage or cohort
 - Kill switch for incidents
 - A/B test in production
 - Targeted access by region or tier
 
-</v-clicks>
-
-</div>
-
-<div>
-
-### <span class="text-accent">Where it hurts</span>
-
-<v-clicks>
-
+Where it hurts:
 - Flags multiply, become permanent
 - "Did the new variant cause the spike?"
 - "Is this rollout moving the KPI?"
 - Telemetry has no idea flags exist
-- <span class="text-green">This is what the open standards close.</span>
 
-</v-clicks>
-
-</div>
-
-</div>
-
-<!--
-The right column is the bridge into the rest of the talk. Once flags drive runtime behavior, your telemetry needs to know what variant was active for every request. Otherwise you cannot answer the only questions that matter: did it work, is it safe, is it making money.
+The inner loop (activate → update → monitor → activate) is the one observability cares about. That is where flag evaluations need to land on the same traces, metrics, and logs as everything else. That is what the open standards close.
 -->
 
 ---
@@ -246,28 +250,35 @@ Five concepts to know: Evaluation API, Provider, Evaluation Context, Hooks, Trac
 
 The vendor-neutral standard for telemetry: traces, metrics, logs.
 
-<div class="mt-8 text-xl">
+<div class="mt-6 text-xl">
 
 What matters for this talk: the <span class="text-accent">feature flag evaluation event</span>.
 
 </div>
 
 ```yaml
-feature_flag.key:            recommendationAlgorithm
-feature_flag.result.variant: personalized
-feature_flag.provider.name:  flagd
+# event name
+feature_flag.evaluation
+
+# required
+feature_flag.key:            new-checkout-flow
+
+# one of: variant (named) or value (raw)
+feature_flag.result.variant: treatment
+
+# recommended
+feature_flag.provider.name:  <your-flag-system>
+feature_flag.result.reason:  TARGETING_MATCH
 ```
 
-<div class="text-xs text-muted mt-4">opentelemetry.io/docs/specs/semconv/feature-flags · development status</div>
-
-<div class="mt-6">
-
-SemConv standardizes the attribute names. That is what makes these attributes queryable the same way across any OTel-compatible backend.
-
-</div>
+<div class="text-xs text-muted mt-3">opentelemetry.io/docs/specs/semconv/feature-flags · status: development</div>
 
 <!--
-SemConv is a small, important piece of standardisation. With these attribute names agreed on, any backend you happen to run can pivot any signal on flag key or variant. No bespoke per-vendor integration. The OpenFeature and OpenTelemetry communities collaborated directly on this, which is why it works as cleanly as it does.
+One event name plus a small set of attributes. The flag key is required. The result is recorded as variant for flags with named variants, or value for raw payloads. The provider name and reason code are recommended and almost always populated.
+
+Other attributes in the spec worth knowing: feature_flag.context.id, feature_flag.set.id, feature_flag.version, error.type for failed evaluations.
+
+With these attribute names agreed on, any backend you happen to run can pivot any signal on flag key or variant. No bespoke per-vendor integration. The OpenFeature and OpenTelemetry communities collaborated directly on this, which is why it works as cleanly as it does.
 -->
 
 ---
