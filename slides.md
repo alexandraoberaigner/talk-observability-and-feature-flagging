@@ -34,7 +34,7 @@ Both maintainers of OpenFeature. The talk is not an advertisement for either com
 layout: section
 ---
 
-# Two acquisitions <br /> in eight months.
+# Two acquisitions <br /> in nine months.
 
 <!--
 We open here because it is the clearest external signal that observability and feature flagging are converging. This talk is not about the acquisitions and not about either company. Everything after this slide is about the open-source layer that any practitioner can use, regardless of which observability backend they happen to run.
@@ -344,6 +344,18 @@ github.com/open-telemetry/opentelemetry-demo · talk fork: github.com/alexandrao
 
 <!--
 The talk runs on a fork of the OpenTelemetry community demo, with three demo-specific flags added. Everything else is upstream.
+-->
+
+---
+layout: default
+---
+
+<div class="flex justify-center items-center h-full">
+  <img :src="'/astronomy-shop-home.png'" alt="Astronomy shop home page" class="max-h-full max-w-full object-contain rounded shadow-lg" />
+</div>
+
+<!--
+What the audience actually sees. The astronomy shop is just a webshop. Nothing special on the surface. The interesting part is what's underneath, which is the next slide.
 -->
 
 ---
