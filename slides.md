@@ -366,7 +366,7 @@ Five concepts to know: Evaluation API, Provider, Evaluation Context, Hooks, Trac
 
 ---
 
-# OpenFeature in Code
+# How it Looks in Code
 
 ```java {1-3|5-6|8-11|13-14|all}
 // 1. Configure provider and OTel hook
@@ -758,7 +758,7 @@ Press Enter to advance each step.
 layout: two-cols
 ---
 
-# Closing the Loop
+# How it Looks in Code
 
 ```go {2-11|13-18|all}
 // otelTrackingProvider
@@ -785,7 +785,7 @@ openfeature.NewClient("checkout").Track(ctx,
 
 <div class="pl-6 mt-10">
 
-```sql {1-2|3-11|12-15|all}
+```sql {hide|1-2|3-11|12-15|all}
 SOURCE otel-logs-*
 | WHERE body = 'checkout.completed'
 | EVAL user_id    = attributes.app.user.id,
@@ -832,7 +832,7 @@ layout: section
 # Personalized drives larger baskets.<br/>The checkout service has no idea the flag exists.
 
 <div class="mt-12 text-xl text-muted">
-One open standard. All use cases.
+Two open standards, many use cases.
 </div>
 
 <!--
