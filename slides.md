@@ -512,7 +512,7 @@ layout: two-cols
 
 # Demo 1 of 3 <br/> <span class="text-accent">Canary rollout</span>
 
-`productCatalogCanary` + `productCatalogV2Severity`<br/>
+Flag: `productCatalogCanary`<br/>
 Service: `product-catalog` (Go)
 
 <div class="mt-4 text-sm text-muted">
@@ -523,11 +523,10 @@ Flag category: <span class="text-green">release toggle</span>. Short-lived, perc
 
 # <span class="text-handwritten text-green">On stage</span>
 
-- Baseline. 5% v2, no errors
-- Step rollout. Yellow latency rises
-- Add severity. Red errors appear
+- Baseline: 5% v2, no errors
+- Step rollout: Yellow latency rises, errors arise
 - Jaeger: `feature_flag.key=productCatalogCanary feature_flag.result.variant=v2`
-- Roll back. Panels recover in ~30s
+- Roll back: Panels recover in ~30s
 
 <div class="mt-6 text-muted">
 
@@ -536,11 +535,8 @@ Rollback: one flag flip. No deploy or restart.
 </div>
 
 <!--
-Stage slot 1. About 3 minutes on the screen. Two flags compose: one controls who gets v2, the other controls how broken v2 is. The dashboard reads app.catalog.version so the severity flag does not contaminate the rollout cohort.
-
-Run before this demo: make demo1   (stop after: make loadgen-stop)
-This starts k6 demo1 load automatically and walks through flag escalation step by step.
-Press Enter to advance each step — the script handles all flag changes.
+- Product catalog service with 1 feature flag
+- Two flags compose: one controls who gets v2, the other controls how broken v2 is. 
 
   step 0  baseline     0% v2, severity=none
   step 1  canary       5% v2, severity=none
@@ -574,13 +570,12 @@ Flag category: <span class="text-green">ops toggle</span>. Cost and quality comp
 # <span class="text-handwritten text-green">On stage</span>
 
 - Baseline on `model-a`
-- Flip to `model-b`. Latency and cost shift
-- Inject errors. Isolated to `model-b`
-- Flip to `off`. Incident contained
+- Flip to `model-b`: Latency and cost shift, errors appear
+- Flip to `off`: Incident contained
 
 <div class="mt-6 text-muted">
 
-Same hook. Same OTel span events. Now covering experimentation and incident response.
+Same hook and OTel span events, now covering experimentation and incident response.
 
 </div>
 
@@ -611,11 +606,9 @@ Flag categories: <span class="text-green">experiment</span> plus <span class="te
 
 # <span class="text-handwritten text-green">On stage</span>
 
-- Hook in Jaeger. The span event
-- Per-variant Grafana. Impressions, p95
-- `client.Track("checkout.completed", ...)`. The log record
-- Average order value (AOV) by variant. OpenSearch PPL joins on session ID
-- Live flip. Dashboard shifts in ~30s
+- `client.Track("checkout.completed", ...)`
+- Per-variant Dashboard
+- Average order value (AOV) by variant: OpenSearch PPL joins on session ID
 
 <!--
 Stage slot 3. About 4 minutes. Premium users get personalized via EvaluationContext. The rest get popularity. Walk in order: span event in Jaeger, per-variant metrics in Grafana, the Track call in checkout, AOV in OpenSearch, live flip.
