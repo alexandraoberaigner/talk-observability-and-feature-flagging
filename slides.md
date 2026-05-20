@@ -287,7 +287,7 @@ Defined together by the OpenFeature and OpenTelemetry communities.
 
 ---
 
-# `feature_flag.evaluation` Attributes
+# Feature Flagging Semantic Conventions
 
 | Attribute | Requirement | Example |
 |---|---|---|
