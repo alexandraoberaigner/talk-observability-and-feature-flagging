@@ -743,20 +743,6 @@ Speaker note on the code side: otelTrackingProvider.Track emits the log record. 
 layout: section
 ---
 
-# Personalized drives larger baskets.<br/>The checkout service has no idea the flag exists.
-
-<div class="mt-12 text-xl text-muted">
-Two open standards, many use cases.
-</div>
-
-<!--
-Closing beat. The recommendation service logs which variant it served. The checkout service tracks the outcome via the OpenFeature Tracking API — no flag knowledge. The PPL query in OpenSearch joins them on session ID. No bespoke integration. No coupling between services. That is what vendor-neutral means in practice.
--->
-
----
-layout: section
----
-
 # 04 · Why Now?
 
 Safe releases, AI risk, experimentation.
