@@ -33,6 +33,17 @@ We not only aim to answer this question today from the company's strategic motiv
 The talk is about what the open-source layer underneath gives you regardless of the company.
 
 Both maintainers of OpenFeature.
+
+
+Intro		| 5   - A
+Feature flagging| 4   - L
+OF 		| 2   - A
+ Otel		| 4   - L
+webshop 	| 3   - A
+demo 1	 	| 2   - L
+demo 2		| 2   - A
+demo 3		| 2/3 - L
+summary 	| 4   - A
 -->
 
 ---
@@ -716,14 +727,14 @@ SOURCE otel-logs-*
   BY algorithm
 | SORT - aov
 ```
-
+<v-after>
 <div class="mt-4 text-muted text-sm">
 
 Two log streams. One join key: `app.user.id`.<br/>
 Neither service knows about the other.
 
 </div>
-
+</v-after>
 </div>
 
 <!--
