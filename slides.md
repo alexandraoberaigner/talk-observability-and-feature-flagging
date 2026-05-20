@@ -194,7 +194,7 @@ The three demos cover the three most observability-relevant categories: release,
 
 ---
 
-# Feature flag lifecycle
+# Feature Flag Lifecycle
 
 <div class="absolute inset-0 flex justify-center items-center pt-24 pb-8 px-8">
   <img :src="'/fflc.svg'" alt="Feature flag lifecycle" class="max-h-full max-w-full object-contain" />
@@ -586,6 +586,51 @@ Flag changes for this demo — use flagd-ui (http://localhost:8080/feature/) or 
   productSummaryModel: model-a → model-b (show degraded model: +300-800ms, ~10% errors)
   productSummaryModel: model-b → off    (kill switch — 503s)
   productSummaryModel: off    → model-a (recover)
+-->
+
+---
+layout: default
+---
+
+# How it Looks in Code
+
+<div class="text-xs text-muted">
+
+Backend (Python): pick the model from a flag.
+
+</div>
+
+```python
+def get_product_summary_model() -> str:
+    client = api.get_client()
+    return client.get_string_value("productSummaryModel", "model-a")
+```
+
+<v-click>
+<div class="text-xs text-muted mt-3">
+
+Frontend (TS): emit the result through the OpenFeature Tracking API.
+
+</div>
+
+```ts
+const handleHelpful = (helpful: boolean) => {
+  OpenFeature.getClient().track(
+    'summary_helpful_clicked',
+    {
+      value: helpful ? 1 : 0,
+      helpful,
+      productId,
+    },
+  );
+  setHelpfulFeedback(helpful ? 'yes' : 'no');
+};
+```
+</v-click>
+
+
+<!--
+Two halves of the same flag. The Python backend reads `productSummaryModel` to choose which model to call — vendor-neutral string evaluation through OpenFeature, with the TracingHook attaching `feature_flag.*` to the active span automatically. The frontend uses the OpenFeature Tracking API (`client.track(...)`) to record user feedback whenever someone reacts to a summary. Same client, same provider chain — the tracking event flows into the same observability backend with trace context attached. Read flags, emit metrics, both sides of the loop, one API.
 -->
 
 ---
