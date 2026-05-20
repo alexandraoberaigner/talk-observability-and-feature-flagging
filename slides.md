@@ -167,7 +167,7 @@ Ship code to production. Decide later who sees it.
 </div>
 
 <div class="flex justify-center mt-8">
-  <img :src="'/feature-flag.svg'" alt="Feature flag" class="max-h-64" />
+  <img src="./images/feature-flag.svg" alt="Feature flag" class="max-h-64" />
 </div>
 
 <!--
@@ -181,7 +181,7 @@ That single sentence is the whole concept. Deploy is a build-and-restart event. 
 # Not All Flags Are the Same
 
 <div class="flex justify-center mt-2">
-  <img :src="'/fowler-ff-types.png'" alt="Feature toggle taxonomy by longevity and dynamism" class="max-h-96" />
+  <img src="./images/fowler-ff-types.png" alt="Feature toggle taxonomy by longevity and dynamism" class="max-h-96" />
 </div>
 
 <div class="text-xs text-muted mt-3 text-center">martinfowler.com/articles/feature-toggles.html</div>
@@ -229,7 +229,7 @@ Briefly. Just enough to make the demo and the synthesis land.
 The vendor-neutral standard for flag evaluation. A CNCF incubating project.
 
 <div class="flex justify-center mt-4">
-  <img :src="'/of-architecture.svg'" alt="OpenFeature architecture" class="max-h-84" />
+  <img src="./images/of-architecture.svg" alt="OpenFeature architecture" class="max-h-84" />
 </div>
 
 <div class="text-xs text-muted mt-4 text-center">openfeature.dev/docs/reference/intro</div>
@@ -380,7 +380,7 @@ layout: default
 ---
 
 <div class="flex justify-center items-center h-full">
-  <img :src="'/astronomy-shop-home.png'" alt="Astronomy shop home page" class="max-h-full max-w-full object-contain rounded shadow-lg" />
+  <img src="./images/astronomy-shop-home.png" alt="Astronomy shop home page" class="max-h-full max-w-full object-contain rounded shadow-lg" />
 </div>
 
 <!--
@@ -614,7 +614,7 @@ Flag categories: <span class="text-green">experiment</span> plus <span class="te
 - Hook in Jaeger. The span event
 - Per-variant Grafana. Impressions, p95
 - `client.Track("checkout.completed", ...)`. The log record
-- AOV by variant. OpenSearch PPL joins on session ID
+- Average order value (AOV) by variant. OpenSearch PPL joins on session ID
 - Live flip. Dashboard shifts in ~30s
 
 <!--
@@ -725,7 +725,7 @@ Safe releases, AI risk, experimentation.
 
 ---
 
-# The Layer Both Vendors Depend on Is Open.
+# The Layer Both Companies Depend on Is Open.
 
 Dynatrace acquired DevCycle &rarr; release safety, progressive delivery
 
@@ -733,7 +733,7 @@ Datadog acquired Eppo &rarr; experimentation, product analytics
 
 <div class="mt-6 text-lg">
 
-Different angles. Same bet: **flag evaluations need to be observable.**
+Different focus, same requirement: **flag evaluations need to be observable.**
 
 </div>
 
@@ -749,7 +749,7 @@ The vendor-neutral API for flag evaluation. Swap providers without touching appl
 <div>
 
 ### <span class="text-green">OpenTelemetry</span>
-The enabler. Hooks emit flag evaluations as span events. SemConv standardizes the attribute names so every backend can query them consistently.
+OpenFeature Hooks emit flag evaluations as OTel span events. SemConv standardizes the attribute names so every backend can query them consistently.
 
 </div>
 
@@ -769,13 +769,13 @@ The two acquisitions tell the same story from different angles. Dynatrace led wi
 <div v-after>One hook emits a span event on every flag evaluation. No manual instrumentation per flag.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>2</div>
-<div v-after>SemConv standardizes the attribute names — any OTel-compatible backend can query flag key and variant without a bespoke integration.</div>
+<div v-after>SemConv standardizes the attribute names. Any OTel-compatible backend can query flag key and variant without a bespoke integration.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>3</div>
-<div v-after><span class="text-green">OpenFeature</span> and <span class="text-green">OpenTelemetry</span> are open standards. Swap providers, swap backends — the instrumentation does not change.</div>
+<div v-after><span class="text-green">OpenFeature</span> and <span class="text-green">OpenTelemetry</span> are open standards. Swap providers, swap backends but the instrumentation does not change.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>4</div>
-<div v-after>Release safety, incident response, experimentation. One setup covers all of them.</div>
+<div v-after>Release safety, incident response, experimentation all covered by one setup.</div>
 
 </div>
 
