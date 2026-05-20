@@ -27,7 +27,12 @@ What OpenFeature and OpenTelemetry give you, on any stack you already run.
 </div>
 
 <!--
-Both maintainers of OpenFeature. The talk is not an advertisement for either company. The demos run on open-source standards and tools; we only use Dynatrace for parts of the demos.
+It's great to see so many people interested in ...title
+
+We not only aim to answer this question today from the company's strategic motivation but also we want to equip you with open-source tooling that can help you xxxx observable feature flagging. 
+The talk is about what the open-source layer underneath gives you regardless of the company.
+
+Both maintainers of OpenFeature.
 -->
 
 ---
@@ -41,8 +46,6 @@ We open here because it is the clearest external signal that observability and f
 -->
 
 ---
-
-
 
 <div class="grid grid-cols-2 grid-rows-2 gap-x-4 gap-y-0 mt-4">
 
@@ -84,11 +87,12 @@ We open here because it is the clearest external signal that observability and f
 </div>
 
 <!--
-Dynatrace bought DevCycle in January 2026. Datadog bought Eppo in May 2025. Two of the biggest observability vendors made significant investments in feature flagging within eight months of each other. We use this as evidence that the convergence is real, then move past it. The talk is about what the open-source layer underneath gives you regardless of vendor.
+* Datadog bought Eppo in May 2025. 
+* Dynatrace bought DevCycle in January 2026. 
+* Two of the biggest observability vendors made significant investments in feature flagging. 
+* While DDog focuses on the experimentation use case of feature flagging, DT focuses on release safely & progressive delivery
 
-Two more direct quotes from the Dynatrace post worth knowing in case the audience asks:
-- "Teams gain a single, contextual view of intent, execution, and outcome across the software development lifecycle." — frames the convergence in their own words.
-- "An AI assistant can query the Dynatrace MCP Server to understand blast radius and KPI impact, then safely reduce exposure or disable a feature without redeploying code." — their forward-looking, AI-driven framing.
+Why?
 -->
 
 ---
@@ -125,7 +129,9 @@ This is the talk's question. The audience leaves with an answer that is not vend
 </div>
 
 <!--
-Three short background sections, three demos, one synthesis. Q&A at the end.
+To answer this question: we are starting with the basics. Talking about feature flagging & the 2 open-source projects which are building the foundation. OF & Otel. We are working our way toward the answer with our 3 live demos.
+
+And finally summarize the answer
 -->
 
 ---
@@ -137,20 +143,24 @@ layout: section
 A runtime switch.
 
 <!--
-Quick grounding for the novice audience. Two slides total.
+What is feature flagging?
+
+Audience: 
+* Who has feature flagged before?
+*
 -->
 
 ---
 
 # What a Feature Flag Does
 
-<div class="text-2xl mt-12">
+<div class="text-2xl mt-8">
 
 It decouples <span class="text-accent">deploy</span> from <span class="text-accent">release</span>.
 
 </div>
 
-<div class="mt-8 text-muted">
+<div class="mt-4 text-muted">
 
 Ship code to production. Decide later who sees it.
 
@@ -162,40 +172,14 @@ That single sentence is the whole concept. Deploy is a build-and-restart event. 
 
 ---
 
-# Feature Flag Lifecycle
-
-<div class="flex justify-center items-center mt-6">
-
-```mermaid {scale: 0.7}
-flowchart LR
-  create["📝 Create"] --> deploy["⚫️ Deploy"]
-  deploy --> activate["⚪️ Activate"]
-  activate --> observe["⚙️ Observation"]
-    observe --> cleanup["🧹 Clean-up"]
-  cleanup --> archive["🗄️ Archive"]
-  observe -.-> |deactivate & fix issue|deploy
-```
-
+<div class="flex justify-center mt-8">
+  <img :src="'/feature-flag.svg'" alt="Feature flag" class="max-h-64" />
 </div>
 
 <!--
-  linkStyle 5 stroke:#00c800,stroke-width:2px
-A flag is not a single switch flipped once. It is a phase of work.
+This is our definition.
 
-What you get along this path:
-- Ship dark, release when ready
-- Roll out by percentage or cohort
-- Kill switch for incidents
-- A/B test in production
-- Targeted access by region or tier
-
-Where it hurts:
-- Flags multiply, become permanent
-- "Did the new variant cause the spike?"
-- "Is this rollout moving the KPI?"
-- Telemetry has no idea flags exist
-
-The inner loop (activate → update → monitor → activate) is the one observability cares about. That is where flag evaluations need to land on the same traces, metrics, and logs as everything else. That is what the open standards close.
+That single sentence is the whole concept. Deploy is a build-and-restart event. Release is a config change. Once you separate them, everything else falls out: progressive rollout, kill switches, A/B tests, beta cohorts.
 -->
 
 ---
@@ -212,6 +196,148 @@ The inner loop (activate → update → monitor → activate) is the one observa
 This taxonomy is from Pete Hodgson's article on martinfowler.com. The categories matter because they have very different lifetimes and very different decision points. A release toggle is short-lived and mostly static. An experiment toggle is dynamic, per-request, and lives long enough to gather data. An ops toggle is a circuit breaker. Permissioning toggles are long-lived by design.
 
 The three demos cover the three most observability-relevant categories: release, ops, experiment. Watch which category each demo lives in.
+-->
+
+---
+
+# Feature flag lifecycle
+
+<style scoped>
+  .lc {
+    display: grid;
+    grid-template-columns: max-content 2rem max-content max-content max-content;
+    column-gap: 0.4rem;
+    row-gap: 0.35rem;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem auto 0;
+  }
+  .stage {
+    padding: 0.45rem 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--of-accent-purple);
+    background: var(--of-bg-soft);
+    font-weight: 600;
+    text-align: center;
+    min-width: 10rem;
+  }
+  .stage.loop {
+    border-style: dashed;
+    background: rgba(124, 58, 237, 0.06);
+  }
+  .arr-d {
+    text-align: center;
+    color: var(--of-text-muted);
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .darr {
+    color: var(--of-text-muted);
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .obs {
+    position: relative;
+  }
+  .obs::before {
+    content: '←';
+    position: absolute;
+    left: -1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--of-accent-purple);
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+  /* L-bracket connecting Observation (bottom-right) up to Activate (top-right) */
+  .loop-arrow {
+    position: relative;
+    align-self: stretch;
+    margin: 1.5rem 0 2.15rem;
+    border-top: 2px dashed var(--of-accent-purple);
+    border-left: 2px dashed var(--of-accent-purple);
+    border-bottom: 2px dashed var(--of-accent-purple);
+    border-radius: 0.5rem 0 0 0.5rem;
+  }
+  .loop-arrow::after {
+    /* arrowhead at top-right pointing right into Activate */
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: -1px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid var(--of-accent-purple);
+  }
+  .loop-arrow::before {
+    /* small connector dot at bottom-right showing entry point from Observation */
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--of-accent-purple);
+  }
+  /* Sticky notes */
+  .note {
+    padding: 0.55rem 0.85rem;
+    background: #fef3a0;
+    color: #4a3a00;
+    font-family: 'Architects Daughter', 'Caveat', 'Patrick Hand', 'Comic Sans MS', cursive;
+    font-size: 1.15rem;
+    line-height: 1.15;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.28);
+    max-width: 14rem;
+    border-radius: 2px;
+  }
+  .note-1 { transform: rotate(-1.6deg); background: #fef3a0; }
+  .note-2 { transform: rotate(1.3deg);  background: #fde68a; }
+</style>
+
+<div class="lc">
+
+  <div class="stage" style="grid-column: 3; grid-row: 1;">📝 Create</div>
+  <div class="arr-d" style="grid-column: 3; grid-row: 2;">↓</div>
+  <div class="stage" style="grid-column: 3; grid-row: 3;">⚫️ Deploy</div>
+  <div class="arr-d" style="grid-column: 3; grid-row: 4;">↓</div>
+  <div class="stage" style="grid-column: 3; grid-row: 5;">⚪️ Activate</div>
+  <div class="arr-d" style="grid-column: 3; grid-row: 6;">↓</div>
+  <div class="stage obs" style="grid-column: 3; grid-row: 7;">⚙️ Observation</div>
+  <div class="arr-d" style="grid-column: 3; grid-row: 8;">↓</div>
+  <div class="stage" style="grid-column: 3; grid-row: 9;">🧹 Clean-up</div>
+  <div class="arr-d" style="grid-column: 3; grid-row: 10;">↓</div>
+  <div class="stage" style="grid-column: 3; grid-row: 11;">🗄️ Archive</div>
+
+  <div class="darr" style="grid-column: 4; grid-row: 7;">┈┈┈▸</div>
+  <div class="note note-1" style="grid-column: 5; grid-row: 7;">Which flag caused<br/>this regression?</div>
+
+  <div class="darr" style="grid-column: 4; grid-row: 9;">┈┈┈▸</div>
+  <div class="note note-2" style="grid-column: 5; grid-row: 9;">Safe to remove<br/>from code?</div>
+
+  <div class="stage loop" style="grid-column: 1; grid-row: 5 / span 3; align-self: center;">🔄 Deactivate<br/>&amp; Fix</div>
+  <div class="loop-arrow" style="grid-column: 2; grid-row: 5 / span 3;"></div>
+
+</div>
+
+<div class="text-sm text-muted text-center mt-4">
+
+The cycle is idealized. Reality is messier.
+
+</div>
+
+<!--
+explain steps.
+
+lifeycle is idealized, reality often different, flags dont get deleted, code doesnt get cleaned up, observation is hard
+
+Issues along the way:
+* Observation step: did a new feature cause the observed error rate increase? Which feature flag? When was it toggled?
+* Clean-up: is the feature rolled out completely - can we remove the feature flag & the old code
 -->
 
 ---
@@ -396,7 +522,6 @@ layout: default
 ---
 
 # Inside the Astronomy Shop
-
 
 
 <div class="flex justify-center items-center">
