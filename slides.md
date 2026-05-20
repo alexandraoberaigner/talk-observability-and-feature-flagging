@@ -22,8 +22,16 @@ What OpenFeature and OpenTelemetry give you, on any stack you already run.
 </div>
 
 <div class="pt-12 flex justify-center gap-12">
-  <PresenterProfile name="Alexandra Oberaigner" company="Dynatrace" size="72px" photo="/alexandra-oberaigner.jpg" />
-  <PresenterProfile name="Lukas Reining" company="codecentric" size="72px" photo="/lukas-reining.jpg" />
+  <div class="flex flex-col items-center gap-2">
+    <img src="./public/alexandra-oberaigner.jpg" alt="Alexandra Oberaigner" class="w-18 h-18 rounded-full object-cover" />
+    <span class="font-semibold">Alexandra Oberaigner</span>
+    <span class="text-sm" style="color:var(--of-text-muted)">Dynatrace</span>
+  </div>
+  <div class="flex flex-col items-center gap-2">
+    <img src="./public/lukas-reining.jpg" alt="Lukas Reining" class="w-18 h-18 rounded-full object-cover" />
+    <span class="font-semibold">Lukas Reining</span>
+    <span class="text-sm" style="color:var(--of-text-muted)">codecentric</span>
+  </div>
 </div>
 
 <!--
@@ -178,7 +186,7 @@ Ship code to production. Decide later who sees it.
 </div>
 
 <div class="flex justify-center mt-8">
-  <img src="./images/feature-flag.svg" alt="Feature flag" class="max-h-64" />
+  <img src="./public/feature-flag.svg" alt="Feature flag" class="max-h-64" />
 </div>
 
 <!--
@@ -192,7 +200,7 @@ That single sentence is the whole concept. Deploy is a build-and-restart event. 
 # Not All Flags Are the Same
 
 <div class="flex justify-center mt-2">
-  <img src="./images/fowler-ff-types.png" alt="Feature toggle taxonomy by longevity and dynamism" class="max-h-96" />
+  <img src="./public/fowler-ff-types.png" alt="Feature toggle taxonomy by longevity and dynamism" class="max-h-96" />
 </div>
 
 <div class="text-xs text-muted mt-3 text-center">martinfowler.com/articles/feature-toggles.html</div>
@@ -208,7 +216,7 @@ The three demos cover the three most observability-relevant categories: release,
 # Feature Flag Lifecycle
 
 <div class="absolute inset-0 flex justify-center items-center pt-24 pb-8 px-8">
-  <img :src="'/fflc.svg'" alt="Feature flag lifecycle" class="max-h-full max-w-full object-contain" />
+  <img src="./public/fflc.svg" alt="Feature flag lifecycle" class="max-h-full max-w-full object-contain" />
 </div>
 
 <!--
@@ -240,7 +248,7 @@ Briefly. Just enough to make the demo and the synthesis land.
 The vendor-neutral standard for flag evaluation. A CNCF incubating project.
 
 <div class="flex justify-center mt-4">
-  <img src="./images/of-architecture.svg" alt="OpenFeature architecture" class="max-h-84" />
+  <img src="./public/of-architecture.svg" alt="OpenFeature architecture" class="max-h-84" />
 </div>
 
 <div class="text-xs text-muted mt-4 text-center">openfeature.dev/docs/reference/intro</div>
@@ -391,7 +399,7 @@ layout: default
 ---
 
 <div class="flex justify-center items-center h-full">
-  <img src="./images/astronomy-shop-home.png" alt="Astronomy shop home page" class="max-h-full max-w-full object-contain rounded shadow-lg" />
+  <img src="./public/astronomy-shop-home.png" alt="Astronomy shop home page" class="max-h-full max-w-full object-contain rounded shadow-lg" />
 </div>
 
 <!--
@@ -827,8 +835,16 @@ Questions?
 </div>
 
 <div class="pt-6 flex justify-center gap-12">
-  <PresenterProfile name="Alexandra Oberaigner" company="Dynatrace" size="64px" photo="/alexandra-oberaigner.jpg" />
-  <PresenterProfile name="Lukas Reining" company="codecentric" size="64px" photo="/lukas-reining.jpg" />
+  <div class="flex flex-col items-center gap-2">
+    <img src="./public/alexandra-oberaigner.jpg" alt="Alexandra Oberaigner" class="w-16 h-16 rounded-full object-cover" />
+    <span class="font-semibold">Alexandra Oberaigner</span>
+    <span class="text-sm" style="color:var(--of-text-muted)">Dynatrace</span>
+  </div>
+  <div class="flex flex-col items-center gap-2">
+    <img src="./public/lukas-reining.jpg" alt="Lukas Reining" class="w-16 h-16 rounded-full object-cover" />
+    <span class="font-semibold">Lukas Reining</span>
+    <span class="text-sm" style="color:var(--of-text-muted)">codecentric</span>
+  </div>
 </div>
 
 <div class="mt-6 flex justify-center gap-8 text-sm">
