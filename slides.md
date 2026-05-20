@@ -287,7 +287,7 @@ Defined together by the OpenFeature and OpenTelemetry communities.
 
 ---
 
-# `feature_flag.evaluation` Attributes
+# Feature Flagging Semantic Conventions
 
 | Attribute | Requirement | Example |
 |---|---|---|
@@ -804,30 +804,6 @@ The two acquisitions tell the same story from different angles. Dynatrace led wi
 </div>
 
 ---
-
-# Get Started
-
-<div class="grid grid-cols-3 gap-4 mt-6">
-  <div class="card text-center">
-    <h3>Learn</h3>
-    <p><a href="https://openfeature.dev">openfeature.dev</a><br/><a href="https://opentelemetry.io/docs/specs/semconv/feature-flags">OTel SemConv — feature flags</a></p>
-  </div>
-  <div class="card text-center">
-    <h3>Try</h3>
-    <p><a href="https://github.com/open-telemetry/opentelemetry-demo">OTel community demo</a> — flags already wired.</p>
-  </div>
-  <div class="card text-center">
-    <h3>Connect</h3>
-    <p><a href="https://cloud-native.slack.com/archives/C0344AANLA1">#openfeature</a> on CNCF Slack</p>
-  </div>
-</div>
-
-<div class="mt-10 text-center">
-  <QRCode url="https://github.com/alexandraoberaigner/talk-observability-and-feature-flagging" size="160px" />
-  <div class="text-xs text-muted mt-2">Slides and notes</div>
-</div>
-
----
 layout: end
 ---
 
@@ -835,11 +811,17 @@ layout: end
 
 Questions?
 
-<div class="mt-8">
-  <OpenFeatureLogo size="200px" />
+<div class="mt-6">
+  <OpenFeatureLogo size="180px" />
 </div>
 
-<div class="pt-10 flex justify-center gap-12">
+<div class="pt-6 flex justify-center gap-12">
   <PresenterProfile name="Alexandra Oberaigner" company="Dynatrace" size="64px" photo="/alexandra-oberaigner.jpg" />
   <PresenterProfile name="Lukas Reining" company="codecentric" size="64px" photo="/lukas-reining.jpg" />
+</div>
+
+<div class="mt-6 flex justify-center gap-8 text-sm">
+  <a href="https://openfeature.dev">openfeature.dev</a>
+  <a href="https://opentelemetry.io/docs/specs/semconv/feature-flags">OTel SemConv</a>
+  <a href="https://cloud-native.slack.com/archives/C0344AANLA1">#openfeature on CNCF Slack</a>
 </div>
