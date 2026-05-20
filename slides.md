@@ -531,7 +531,7 @@ Flag category: <span class="text-green">release toggle</span>. Short-lived, perc
 
 <div class="mt-6 text-muted">
 
-Rollback: one flag flip. No deploy. No restart.
+Rollback: one flag flip. No deploy or restart.
 
 </div>
 
@@ -604,7 +604,7 @@ Variants: `popularity`, `collaborative`, `personalized`<br/>
 Service: `recommendation` (Python)
 
 <div class="mt-4 text-sm text-muted">
-Flag categories: <span class="text-green">experiment</span> plus <span class="text-green">permissioning</span>. Premium users get personalized; the rest are split 50/50.
+Flag categories: <span class="text-green">experiment</span> plus <span class="text-green">permissioning</span>. Premium users get personalized; the rest popularity.
 </div>
 
 ::right::
