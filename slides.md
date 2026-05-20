@@ -166,12 +166,6 @@ Ship code to production. Decide later who sees it.
 
 </div>
 
-<!--
-That single sentence is the whole concept. Deploy is a build-and-restart event. Release is a config change. Once you separate them, everything else falls out: progressive rollout, kill switches, A/B tests, beta cohorts.
--->
-
----
-
 <div class="flex justify-center mt-8">
   <img :src="'/feature-flag.svg'" alt="Feature flag" class="max-h-64" />
 </div>
