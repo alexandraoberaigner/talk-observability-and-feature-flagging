@@ -34,7 +34,7 @@ Both maintainers of OpenFeature. The talk is not an advertisement for either com
 layout: section
 ---
 
-# Two acquisitions <br /> in nine months.
+# Two Acquisitions <br /> in Nine Months.
 
 <!--
 We open here because it is the clearest external signal that observability and feature flagging are converging. This talk is not about the acquisitions and not about either company. Everything after this slide is about the open-source layer that any practitioner can use, regardless of which observability backend they happen to run.
@@ -95,7 +95,7 @@ Two more direct quotes from the Dynatrace post worth knowing in case the audienc
 layout: intro
 ---
 
-# Why now?
+# Why Now?
 
 <!--
 This is the talk's question. The audience leaves with an answer that is not vendor-shaped.
@@ -132,7 +132,7 @@ Three short background sections, three demos, one synthesis. Q&A at the end.
 layout: section
 ---
 
-# 01 · Feature flagging
+# 01 · Feature Flagging
 
 A runtime switch.
 
@@ -142,7 +142,7 @@ Quick grounding for the novice audience. Two slides total.
 
 ---
 
-# What a feature flag does
+# What a Feature Flag Does
 
 <div class="text-2xl mt-12">
 
@@ -162,7 +162,7 @@ That single sentence is the whole concept. Deploy is a build-and-restart event. 
 
 ---
 
-# Feature flag lifecycle
+# Feature Flag Lifecycle
 
 <div class="flex justify-center items-center mt-6">
 
@@ -200,7 +200,7 @@ The inner loop (activate → update → monitor → activate) is the one observa
 
 ---
 
-# Not all flags are the same
+# Not All Flags Are the Same
 
 <div class="flex justify-center mt-2">
   <img :src="'/fowler-ff-types.png'" alt="Feature toggle taxonomy by longevity and dynamism" class="max-h-96" />
@@ -218,7 +218,7 @@ The three demos cover the three most observability-relevant categories: release,
 layout: section
 ---
 
-# 02 · Open standards
+# 02 · Open Standards
 
 OpenFeature and OpenTelemetry.
 
@@ -246,44 +246,77 @@ Five concepts to know: Evaluation API, Provider, Evaluation Context, Hooks, Trac
 
 ---
 
-# OpenTelemetry
+# OpenFeature in Code
 
-The vendor-neutral standard for telemetry: traces, metrics, logs.
+```java {1-3|5-6|8-11|13-14|all}
+// 1. Configure provider and OTel hook
+OpenFeatureAPI api = OpenFeatureAPI.getInstance();
+api.setProviderAndWait(new MyFeatureProvider());
 
-<div class="mt-6 text-xl">
+// 2. Create a client
+Client client = api.getClient();
 
-What matters for this talk: the <span class="text-accent">feature flag evaluation event</span>.
+// 3. Evaluation context for targeting
+Map<String, Value> attrs = new HashMap<>();
+attrs.put("tier", new Value("premium"));
+EvaluationContext ctx = new ImmutableContext("user-42", attrs);
 
-</div>
-
-```yaml
-# event name
-feature_flag.evaluation
-
-# required
-feature_flag.key:            recommendationAlgorithm
-
-# named variant — or feature_flag.result.value for raw payloads
-feature_flag.result.variant: personalized
-
-# recommended
-feature_flag.provider.name:  flagd
-feature_flag.result.reason:  TARGETING_MATCH
+// 4. Evaluate
+boolean enabled = client.getBooleanValue("v2_enabled", false, ctx);
 ```
 
-<div class="text-xs text-muted mt-3">opentelemetry.io/docs/specs/semconv/feature-flags · status: development</div>
+<div class="text-xs text-muted mt-3">openfeature.dev/docs/reference/sdks/server/java</div>
 
 <!--
-One event name plus a small set of attributes. The flag key is required. The result variant is the named variant — in our demo, "personalized" for premium users. The provider name and reason code are recommended and almost always populated.
-
-Other attributes in the spec worth knowing: feature_flag.context.id, feature_flag.set.id, feature_flag.version, error.type for failed evaluations.
-
-With these attribute names agreed on, any backend you happen to run can pivot any signal on flag key or variant. No bespoke per-vendor integration. The OpenFeature and OpenTelemetry communities collaborated directly on this, which is why it works as cleanly as it does.
+Four steps. Register a provider, add the OTel hook, create a client, evaluate a flag. The provider is the only vendor-specific line. Swap MyFeatureProvider for flagd, DevCycle, LaunchDarkly, or anything that implements FeatureProvider. The TracesHook emits a feature_flag.evaluation span event on the active OTel span for every evaluation. The evaluation context carries the targeting key and attributes the provider uses for targeting rules. The flag evaluation itself returns a string variant. All of this is vendor-neutral. The only thing that changes between vendors is the provider constructor.
 -->
 
 ---
 
-# Wiring things up
+# OpenTelemetry
+
+The vendor-neutral standard for telemetry: traces, metrics, logs.
+
+<div class="mt-12 text-xl">
+
+What matters for this talk: the <span class="text-accent">`feature_flag.evaluation`</span> event.
+
+</div>
+
+<div class="mt-6 text-muted">
+
+Defined together by the OpenFeature and OpenTelemetry communities.
+
+</div>
+
+---
+
+# `feature_flag.evaluation` Attributes
+
+| Attribute | Requirement | Example |
+|---|---|---|
+| `feature_flag.key` | **Required** | `recommendationAlgorithm` |
+| `feature_flag.result.variant` | **Cond. Required** | `personalized` |
+| `feature_flag.provider.name` | Recommended | `flagd` |
+| `feature_flag.result.reason` | Recommended | `targeting_match`, `split` |
+| `feature_flag.context.id` | Recommended | `5157782b-...` |
+| `error.type` | Cond. Required | `flag_not_found` |
+
+<div class="text-xs text-muted mt-4">
+
+opentelemetry.io/docs/specs/semconv/feature-flags/feature-flags-events · openfeature.dev/specification/appendix-d
+
+</div>
+
+<!--
+Walk through the table top to bottom. The key is always required. Variant is required when the provider returns one, otherwise the raw value is required. Reason codes map directly to OpenFeature resolution reasons, lowercased to snake_case: targeting_match means a rule matched, split means random assignment, default means no dynamic evaluation happened. The context ID is typically the targeting key. The set ID and version help correlate evaluations to specific flag configurations. Error type and message are only present when something went wrong.
+
+The OpenFeature hook implementations follow the mapping defined in Appendix D of the OpenFeature spec. That is why a single hook setup gives you all of these attributes automatically.
+-->
+
+---
+
+# How it Works Together
 
 ```python
 # Python
@@ -316,7 +349,7 @@ This is the single most important slide in the deck. Three lines of code. The ho
 layout: section
 ---
 
-# 03 · Live demo
+# 03 · Live Demo
 
 Three scenarios. One hook.
 
@@ -326,7 +359,7 @@ We switch screens here. Three demos, run in this order: canary, AI, recommendati
 
 ---
 
-# The astronomy shop
+# The Astronomy Shop
 
 The <span class="text-accent">OpenTelemetry community demo</span>. A small e-commerce stack instrumented end-to-end with OpenTelemetry.
 
@@ -362,7 +395,7 @@ What the audience actually sees. The astronomy shop is just a webshop. Nothing s
 layout: default
 ---
 
-# Inside the astronomy shop
+# Inside the Astronomy Shop
 
 
 
@@ -606,7 +639,7 @@ Press Enter to advance each step.
 layout: two-cols
 ---
 
-# Closing the loop
+# Closing the Loop
 
 ```go {2-11|13-18|all}
 // otelTrackingProvider
@@ -691,13 +724,13 @@ Closing beat. The recommendation service logs which variant it served. The check
 layout: section
 ---
 
-# 04 · Why now?
+# 04 · Why Now?
 
 Safe releases, AI risk, experimentation.
 
 ---
 
-# The layer both vendors depend on is open.
+# The Layer Both Vendors Depend on Is Open.
 
 Dynatrace acquired DevCycle &rarr; release safety, progressive delivery
 
@@ -753,7 +786,7 @@ The two acquisitions tell the same story from different angles. Dynatrace led wi
 
 ---
 
-# Get started
+# Get Started
 
 <div class="grid grid-cols-3 gap-4 mt-6">
   <div class="card text-center">
@@ -779,7 +812,7 @@ The two acquisitions tell the same story from different angles. Dynatrace led wi
 layout: end
 ---
 
-# Thank you
+# Thank You
 
 Questions?
 
