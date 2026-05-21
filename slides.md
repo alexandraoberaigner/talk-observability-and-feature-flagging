@@ -264,7 +264,7 @@ Five concepts to know: Evaluation API, Provider, Evaluation Context, Hooks, Trac
 
 # How it Looks in Code
 
-```java {1-3|5-6|8-11|13-14|all}
+```java {1-3|5-6|13-14|8-11|all}
 // 1. Configure provider and OTel hook
 OpenFeatureAPI api = OpenFeatureAPI.getInstance();
 api.setProviderAndWait(new MyFeatureProvider());
@@ -336,13 +336,10 @@ The OpenFeature hook implementations follow the mapping defined in Appendix D of
 
 ```python
 # Python
+from openfeature import api
 from openfeature.contrib.hook.opentelemetry import TracingHook
-api.add_hooks([TracingHook()])
-```
 
-```go
-// Go
-openfeature.AddHooks(otelhooks.NewTracesHook())
+api.add_hooks([TracingHook()])
 ```
 
 <div class="mt-8">
@@ -353,7 +350,7 @@ After this runs at startup, <span class="text-accent">every flag evaluation</spa
 
 <div class="mt-4 text-muted">
 
-No per-call code. No bespoke instrumentation per flag. One line at startup.
+No per-call code. No explicit instrumentation per flag. One line at startup.
 
 </div>
 
@@ -813,7 +810,7 @@ The two acquisitions tell the same story from different angles. Dynatrace led wi
 <div v-after>One hook emits a span event on every flag evaluation. No manual instrumentation per flag.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>2</div>
-<div v-after>SemConv standardizes the attribute names. Any OTel-compatible backend can query flag key and variant without a bespoke integration.</div>
+<div v-after>SemConv standardizes the attribute names. Any OTel-compatible backend can query flag key and variant without a custom integration.</div>
 
 <div class="text-accent font-bold text-2xl" v-click>3</div>
 <div v-after><span class="text-green">OpenFeature</span> and <span class="text-green">OpenTelemetry</span> are open standards. Swap providers, swap backends but the instrumentation does not change.</div>
