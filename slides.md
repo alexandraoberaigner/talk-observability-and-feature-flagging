@@ -165,8 +165,9 @@ A runtime switch.
 What is feature flagging?
 
 Audience: 
-* Who has feature flagged before?
 *
+* Who has feature flagged before?
+* Who has heard about OF?
 -->
 
 ---
@@ -594,7 +595,7 @@ Flag category: <span class="text-green">ops toggle</span>. Cost and quality comp
 
 <div class="mt-6 text-muted">
 
-Same hook and OTel span events, now covering experimentation and incident response.
+Tracing hook and OTel span events: experimentation and incident response.
 
 </div>
 
